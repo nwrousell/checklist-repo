@@ -35,14 +35,14 @@ export default function Layout({ children }) {
     const [navOut, setNavOut] = useState(false)
     const router = useRouter()
 
-    if(PATHNAMES_EXCLUDED_FROM_LAYOUT.includes(router.pathname)){
+    if (PATHNAMES_EXCLUDED_FROM_LAYOUT.includes(router.pathname)) {
         return children
     }
 
     return (
         <div className={`${darkMode && 'dark bg-gray-800'}`}>
             <div className="hidden md:flex">
-                <div className="flex flex-col justify-between h-screen p-4 shadow w-80">
+                <div className="flex flex-col justify-between h-screen p-4 border-r border-gray-200 dark:border-gray-700 w-80">
                     <div>
                         <div className="flex items-center h-14">
                             <Link href="/">
@@ -51,16 +51,13 @@ export default function Layout({ children }) {
                         </div>
                         <HR />
                         <div >
-                            { LEFT_SIDEBAR_LINKS.map((props, i) => <LeftSidebarLink {...props} active={router.pathname === props.href} key={i} />) }
+                            {LEFT_SIDEBAR_LINKS.map((props, i) => <LeftSidebarLink {...props} active={router.pathname === props.href} key={i} />)}
                         </div>
                     </div>
                     <div>
                         <HR />
                         <div>
-                            <div className="flex items-center p-2 mb-2 rounded cursor-pointer select-none group hover:bg-gray-100">
-                                <HiOutlineLogout size={24} className="mr-2 text-gray-300 group-hover:text-gray-400" />
-                                <p className="text-lg font-medium text-gray-300 group-hover:text-gray-400">Log out</p>
-                            </div>
+                            <LogoutButton />
                         </div>
                     </div>
                 </div>
@@ -68,14 +65,15 @@ export default function Layout({ children }) {
                     <div className="px-8 py-4">
                         <div className="flex items-center justify-between h-14">
                             <Search className="w-96" />
-                            <div>
-                                <BiSun size={28} className="text-gray-700 cursor-pointer" />
+                            <div className="mr-2">
+                                <BiSun onClick={() => setDarkMode(true)} size={28} className={`text-gray-700 cursor-pointer ${darkMode && 'hidden'}`} />
+                                <BsFillMoonFill onClick={() => setDarkMode(false)} size={28} className={`text-gray-500 cursor-pointer ${!darkMode && 'hidden'}`} />
                             </div>
                         </div>
                         <HR />
                     </div>
-                    <div className="py-4 pl-8">
-                        { children }
+                    <div className="pl-8">
+                        {children}
                     </div>
                 </div>
             </div>
@@ -86,15 +84,12 @@ export default function Layout({ children }) {
                 </div>
                 <div className={` ${!navOut ? 'hidden' : 'p-4 border-b-2 rounded border-gray-200'}`}>
                     <Search className="mb-2" />
-                    { LEFT_SIDEBAR_LINKS.map((props, i) => <LeftSidebarLink {...props} active={router.pathname === props.href} key={i} />) }
+                    {LEFT_SIDEBAR_LINKS.map((props, i) => <LeftSidebarLink {...props} active={router.pathname === props.href} key={i} />)}
                     <HR />
-                    <div className="flex items-center p-2 mb-2 rounded cursor-pointer select-none group hover:bg-gray-100">
-                        <HiOutlineLogout size={24} className="mr-2 text-gray-300 group-hover:text-gray-400" />
-                        <p className="text-lg font-medium text-gray-300 group-hover:text-gray-400">Log out</p>
-                    </div>
+                    <LogoutButton />
                 </div>
-                <div>
-                    { children }
+                <div className="p-4">
+                    {children}
                 </div>
             </div>
         </div>
@@ -103,21 +98,28 @@ export default function Layout({ children }) {
 
 function LeftSidebarLink({ title, Icon, active, href }) {
     return <Link href={href}>
-        <div className={`flex items-center p-2 mb-2 rounded cursor-pointer select-none ${active ? 'bg-primary-100' : 'group hover:bg-gray-100'}`}>
-            <Icon size={24} className={`mr-2 ${active ? 'text-primary-700' : 'text-gray-300 group-hover:text-gray-400'}`} />
-            <p className={`text-lg font-medium ${active ? 'text-primary-700' : 'text-gray-300 group-hover:text-gray-400'}`}>{ title }</p>
+        <div className={`flex items-center p-2 mb-2 rounded cursor-pointer select-none ${active ? 'bg-primary-100 dark:bg-primary-800' : 'group hover:bg-gray-100 dark:hover:bg-gray-700'}`}>
+            <Icon size={24} className={`mr-2 ${active ? 'text-primary-700 dark:text-primary-500' : 'text-gray-300 dark:text-gray-500 group-hover:text-gray-400 dark:group-hover:text-gray-400'}`} />
+            <p className={`text-lg font-medium ${active ? 'text-primary-700 dark:text-primary-500' : 'text-gray-300 dark:text-gray-500 group-hover:text-gray-400 dark:group-hover:text-gray-400'}`}>{title}</p>
         </div>
     </Link>;
 }
-
+function LogoutButton() {
+    return (
+        <div className={`flex items-center p-2 mb-2 rounded cursor-pointer select-none group hover:bg-gray-100 dark:hover:bg-gray-700`}>
+            <HiOutlineLogout size={24} className={`mr-2 text-gray-300 dark:text-gray-500 group-hover:text-gray-400 dark:group-hover:text-gray-400`} />
+            <p className={`text-lg font-medium text-gray-300 dark:text-gray-500 group-hover:text-gray-400 dark:group-hover:text-gray-400`}>Log out</p>
+        </div>
+    )
+}
 function Logo() {
     return <div className="flex items-center cursor-pointer select-none">
-        <HiOutlineClipboardList size={36} className="mr-2 text-primary-700" />
-        <p className="font-mono text-xl font-semibold text-primary-700">Checklist Repo</p>
+        <HiOutlineClipboardList size={36} className="mr-2 text-primary-700 dark:text-primary-500" />
+        <p className="font-mono text-xl font-semibold text-primary-700 dark:text-primary-500">Checklist Repo</p>
     </div>
 }
 
-function Search({ className="" }) {
+function Search({ className = "" }) {
     return (
         <form>
             {/* <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Search</label> */}
@@ -125,8 +127,8 @@ function Search({ className="" }) {
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <svg aria-hidden="true" className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
-                <input type="search" id="default-search" className={`block w-full p-3 pl-10 text-sm text-gray-900 bg-gray-100 rounded-lg outline-none dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 ${className}`} placeholder="Search..." required />
-                    {/* <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button> */}
+                <input type="search" id="default-search" className={`block w-full p-3 pl-10 text-sm text-gray-900 bg-gray-100 rounded-lg outline-none dark:placeholder-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 ${className}`} placeholder="Search..." required />
+                {/* <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button> */}
             </div>
         </form>
     )

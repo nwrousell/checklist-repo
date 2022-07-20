@@ -7,8 +7,8 @@ export default function Button({ title, small=false, color="primary", onClick, c
     if(color=='light') colorClasses = 'text-gray-900 bg-white border hover:bg-gray-100 focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
 
     let sizeClasses
-    if(small) sizeClasses = 'rounded-lg text-sm px-2.5 py-1.5'
-    else sizeClasses = 'rounded-lg text-md px-5 py-2.5 mb-2'
+    if(small) sizeClasses = 'rounded text-sm px-2.5 py-1.5'
+    else sizeClasses = 'rounded text-md px-5 py-2.5 mb-2'
 
     return (
         <button 

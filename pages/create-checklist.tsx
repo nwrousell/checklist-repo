@@ -32,7 +32,7 @@ export default function CreateChecklist(){
     }
 
     return (
-        <div className="p-4">
+        <div className="">
             <TextInput title='Title' setValue={setTitle} className="mb-2" />
             <TextArea title='description' setValue={setDescription} className="mb-2" />
             <TagsInput onTagsUpdate={setTags} />
