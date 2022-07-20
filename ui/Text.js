@@ -1,6 +1,6 @@
 
 
-export default function Text({ small = false, children, className, }) {
+export default function Text({ small = false, children, className="", }) {
     return (
         <p className={`${small ? 'text-sm text-gray-500 font-md' : 'text-md text-gray-700'} ${className}`}>{children}</p>
     )

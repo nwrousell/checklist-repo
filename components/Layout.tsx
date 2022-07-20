@@ -28,12 +28,16 @@ const LEFT_SIDEBAR_LINKS = [
         Icon: AiOutlineStar,
     },
 ]
+const PATHNAMES_EXCLUDED_FROM_LAYOUT = ['/login']
 
 export default function Layout({ children }) {
     const [darkMode, setDarkMode] = useState(false)
     const [navOut, setNavOut] = useState(false)
     const router = useRouter()
 
+    if(PATHNAMES_EXCLUDED_FROM_LAYOUT.includes(router.pathname)){
+        return children
+    }
 
     return (
         <div className={`${darkMode && 'dark bg-gray-800'}`}>
