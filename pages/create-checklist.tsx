@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 
 import type { Checklist, ChecklistItem } from "../types";
 import Button from "../ui/Button";
+import HR from "../ui/HR";
 
 export default function CreateChecklist(){
     const [title, setTitle] = useState("")
@@ -32,15 +33,21 @@ export default function CreateChecklist(){
     }
 
     return (
-        <div className="">
-            <TextInput title='Title' setValue={setTitle} className="mb-2" />
-            <TextArea title='description' setValue={setDescription} className="mb-2" />
-            <TagsInput onTagsUpdate={setTags} />
-            
-            <Heading>Checklist Items</Heading>
-            { items.length==0 && <Text className="mb-2" small>No items have been added, click the button below to add the first.</Text> }
-            { items.map((props, i) => <Checkbox {...props} disabled className="my-4" />) }
-            <Button title="Add Item" onClick={() => setItemFormModal(true)} />
+        <div className="md:grid md:grid-cols-2 md:gap-8">
+            <div>
+                <Heading>Create Checklist</Heading>
+                <HR />
+                <TextInput title='Title' setValue={setTitle} className="mb-2" />
+                <TextArea title='description' setValue={setDescription} className="mb-2" />
+                {/* <TagsInput onTagsUpdate={setTags} /> */}
+            </div>
+            <div>
+                <Heading>Checklist Items</Heading>
+                <HR />
+                { items.length==0 && <Text className="mb-2" small>No items have been added, click the button below to add the first.</Text> }
+                { items.map((props, i) => <Checkbox {...props} large disabled className="my-4" />) }
+                <Button title="Add Item" onClick={() => setItemFormModal(true)} />
+            </div>
 
             { itemFormModal && <Modal action={addChecklistItem} actionTitle="Add Item" content={<TaskForm setTask={setNewItem} />} close={() => setItemFormModal(false)} /> }
         </div>

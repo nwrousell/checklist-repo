@@ -5,7 +5,7 @@ export default function TextInput({ title, inputRef=null, placeholder=null, erro
     return (
         <div className={className}>
             <label htmlFor="first_name" className={labelClasses}>{ title }</label>
-            <input ref={inputRef} onChange={(e) => setValue(e.target.value)} type={password ? 'password' : 'text'} id="first_name" className={`${inputClasses} min-w-max`} placeholder={placeholder || `${title}...`} required={required} />
+            <input ref={inputRef} onChange={(e) => setValue(e.target.value)} type={password ? 'password' : 'text'} id="first_name" className={`${inputClasses}`} placeholder={placeholder || `${title}...`} required={required} />
         </div>
     )
 }

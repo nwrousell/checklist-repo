@@ -14,6 +14,9 @@ module.exports = {
         extend: {
             colors: {
                 primary: colors.green,
+            },
+            spacing: {
+                '0.75': '3px'
             }
         },
     },

@@ -2,7 +2,7 @@
 
 export default function Text({ small = false, children, className="", }) {
     return (
-        <p className={`${small ? 'text-sm text-gray-500 font-md' : 'text-md text-gray-700'} ${className}`}>{children}</p>
+        <p className={`${small ? 'text-sm text-gray-500 font-md' : 'text-md text-gray-700 dark:text-gray-300'} ${className}`}>{children}</p>
     )
 }
 
