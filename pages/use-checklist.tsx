@@ -28,10 +28,10 @@ export default function UseChecklist({ }) {
     })
 
     return (
-        <div>
-            <div className="flex justify-between">
-                <Heading>{checklistProps.title}</Heading>
-                <div className="flex items-center mb-2">
+        <div className="h-full">
+            <div className="flex flex-wrap justify-between mb-2">
+                <Heading className="mr-4">{checklistProps.title}</Heading>
+                <div className="flex items-center ">
                     <Text className="font-semibold">{ checklistProps.hearts }</Text>
                     <AiFillHeart size={18} className="ml-1 text-red-500" />
                 </div>

@@ -44,12 +44,11 @@ export default function Layout({ children }) {
         // if(typeof window === "undefined") return
 
         let preference = JSON.parse(localStorage.getItem('darkMode'))
-        console.log(preference)
-        if(preference !== null) setDarkMode(preference)
+        if (preference !== null) setDarkMode(preference)
     }, [])
 
     useEffect(() => {
-        if(!initialLoad){
+        if (!initialLoad) {
             setInitialLoad(true)
             return
         }
@@ -57,14 +56,12 @@ export default function Layout({ children }) {
     }, [darkMode])
 
     return (
-        <div className={`${darkMode && 'dark bg-gray-800'}`}>
+        <div className={`min-h-screen ${darkMode && 'dark bg-gray-800'}`}>
             <div className="hidden md:flex">
                 <div className="flex flex-col justify-between h-screen p-4 border-r border-gray-200 dark:border-gray-700 w-80">
                     <div>
                         <div className="flex items-center h-14">
-                            <Link href="/">
-                                <Logo />
-                            </Link>
+                            <Logo />
                         </div>
                         <HR />
                         <div >
@@ -94,16 +91,16 @@ export default function Layout({ children }) {
                     </div>
                 </div>
             </div>
-            <div className="md:hidden">
+            <div className="h-full md:hidden">
                 <div className="flex items-center justify-between p-4 border-b-2 border-gray-200">
                     <Logo />
                     <div className="flex items-center">
                         <div className="mr-2">
-                                <BiSun onClick={() => setDarkMode(true)} size={42} className={`p-2 rounded text-gray-700 cursor-pointer select-none hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 ${darkMode && 'hidden'}`} />
-                                <BsFillMoonFill onClick={() => setDarkMode(false)} size={42} className={`p-2 rounded text-gray-500 cursor-pointer select-none hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 ${!darkMode && 'hidden'}`} />
+                            <BiSun onClick={() => setDarkMode(true)} size={42} className={`p-2 rounded text-gray-700 cursor-pointer select-none hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 ${darkMode && 'hidden'}`} />
+                            <BsFillMoonFill onClick={() => setDarkMode(false)} size={42} className={`p-2 rounded text-gray-500 cursor-pointer select-none hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 ${!darkMode && 'hidden'}`} />
                         </div>
                         <AiOutlineMenu onClick={() => setNavOut(!navOut)} size={42} className="p-2 text-gray-700 rounded cursor-pointer select-none hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700" />
-                    </div> 
+                    </div>
                 </div>
                 <div className={` ${!navOut ? 'hidden' : 'p-4 border-b-2 rounded border-gray-200'}`}>
                     <Search className="mb-2" />
@@ -111,7 +108,7 @@ export default function Layout({ children }) {
                     <HR />
                     <LogoutButton />
                 </div>
-                <div className="p-4">
+                <div className="h-full p-4">
                     {children}
                 </div>
             </div>
@@ -137,12 +134,14 @@ function LogoutButton() {
 }
 function Logo() {
     return (
-        <div className="flex items-center cursor-pointer select-none">
-            <HiOutlineClipboardList size={36} className="mr-2 text-primary-700 dark:text-primary-500" />
-            <p className="font-mono text-xl font-semibold text-primary-700 dark:text-primary-500">Checklist Repo</p>
-        </div>
+        <Link href="/">
+            <div className="flex items-center cursor-pointer select-none">
+                <HiOutlineClipboardList size={36} className="mr-2 text-primary-700 dark:text-primary-500" />
+                <p className="font-mono text-xl font-semibold text-primary-700 dark:text-primary-500">Checklist Repo</p>
+            </div>
+        </Link>
     )
-    
+
 }
 
 function Search({ className = "" }) {
