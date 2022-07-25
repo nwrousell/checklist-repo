@@ -46,7 +46,7 @@ const DUMMY_CHECKLISTS: Checklist[] = [
 const Home: NextPage = () => {
 
     return (
-        <div className="grid h-full grid-cols-1 gap-8 p-8 lg:grid-cols-2 xl:grid-cols-3 bg-gray-50 dark:bg-gray-700">
+        <div className="grid h-full grid-cols-1 gap-4 p-4 md:p-8 lg:gap-8 md:grid-cols-2 lg:grid-cols-3 bg-gray-50 dark:bg-gray-700">
             { DUMMY_CHECKLISTS.map((props: Checklist, i) => <ChecklistCard {...props} key={i} />) }
         </div>
     )
