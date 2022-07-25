@@ -8,9 +8,10 @@ import Modal from '../ui/Modal'
 
 import { useEffect, useState } from "react";
 
-import type { Checklist, ChecklistItem } from "../types";
 import Button from "../ui/Button";
 import HR from "../ui/HR";
+import Checklist, { ChecklistItem } from "../components/Checklist";
+
 
 export default function CreateChecklist(){
     const [title, setTitle] = useState("")
@@ -45,7 +46,7 @@ export default function CreateChecklist(){
                 <Heading>Checklist Items</Heading>
                 <HR />
                 { items.length==0 && <Text className="mb-2" small>No items have been added, click the button below to add the first.</Text> }
-                { items.map((props, i) => <Checkbox {...props} large disabled className="my-4" />) }
+                <Checklist items={items} disabled large />
                 <Button title="Add Item" onClick={() => setItemFormModal(true)} />
             </div>
 

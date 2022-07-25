@@ -47,8 +47,8 @@ export default function Login() {
 
     // https://dribbble.com/shots/17367018-Saas-Log-in-page
     return (
-        <div className="flex items-center justify-center h-screen md:bg-gray-100">
-            <div className="p-4 bg-white rounded w-96">
+        <div className="flex items-center justify-center h-screen md:bg-gray-100 md:dark:bg-gray-700">
+            <div className="p-4 bg-white rounded dark:bg-gray-800 w-96">
                 <Heading>{signingUp ? 'Sign up' : 'Log in'}</Heading>
                 <Text small className="mb-4">Enter your credentials to access your account.</Text>
                 <GoogleButton onClick={() => signInWithPopup(auth, provider)} />
@@ -63,9 +63,9 @@ export default function Login() {
 
                 {
                     signingUp ?
-                        <Text className="select-none">Already have an account? <span onClick={() => setSigningUp(false)} className="cursor-pointer text-primary-700 hover:text-gray-700">Log in</span></Text>
+                        <Text className="select-none">Already have an account? <span onClick={() => setSigningUp(false)} className="cursor-pointer text-primary-700 hover:text-gray-700 dark:hover:text-white">Log in</span></Text>
                         :
-                        <Text className="select-none">Don't have an account? <span onClick={() => setSigningUp(true)} className="cursor-pointer text-primary-700 hover:text-gray-700">Sign up</span></Text>
+                        <Text className="select-none">Don't have an account? <span onClick={() => setSigningUp(true)} className="cursor-pointer text-primary-700 hover:text-gray-700 dark:hover:text-white">Sign up</span></Text>
                 }
 
                 {loginError !== '' && <DangerAlert className="mt-4">{loginError}</DangerAlert>}

@@ -1,12 +1,26 @@
 import { useReducer, } from 'react'
-import { ChecklistItem } from "../types"
 import NumberedCheckbox from "../ui/NumberedCheckbox"
 
 function reducer(state: boolean[], action){
     return [ ...state.slice(0, action.index), action.value, ...state.slice(action.index+1) ]
 }
 
-export default function Checklist({ items, large = false, disabled = false, cutOff=999 }) {
+interface Checklist {
+    title: string;
+    description: string;
+    tags: string[];
+    items: ChecklistItem[];
+    hearts: Number
+}
+
+export interface ChecklistItem {
+    title: string;
+    subText?: string;
+    [key: string]: any;
+}
+
+
+function Checklist({ items, large = false, disabled = false, cutOff=999 }) {
     const [itemsStatus, dispatch] = useReducer(reducer, createArrayOfFalses(items.length))
 
     const generateChecklist = () => {
@@ -33,3 +47,5 @@ function createArrayOfFalses(length: number): boolean[] {
     for (let i = 0; i < length; i++) array.push(false)
     return array
 }
+
+export default Checklist

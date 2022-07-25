@@ -60,7 +60,9 @@ export default function Layout({ children }) {
     if (PATHNAMES_EXCLUDED_FROM_LAYOUT.includes(router.pathname)) {
         return (
             <FirebaseContext.Provider value={{ auth, db }}>
-                {children}
+                <div className={`min-h-screen ${darkMode && 'dark bg-gray-800'}`}>
+                    {children}
+                </div>
             </FirebaseContext.Provider>
         )
     }

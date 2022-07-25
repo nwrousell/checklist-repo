@@ -5,7 +5,7 @@ export default function Modal({ close, content, actionTitle, action }){
     return (
         <>
             <Overlay />
-            <div className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-4 z-50">
+            <div className="fixed z-50 p-4 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg left-1/2 top-1/2 dark:bg-gray-800">
                 { content }
                 <hr className="my-4" />
                 <div className="flex justify-end">

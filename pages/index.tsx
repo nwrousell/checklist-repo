@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import { useState } from 'react'
-import type { Checklist, ChecklistItem } from '../types'
+import Checklist, { ChecklistItem } from '../components/Checklist'
 
 import ChecklistCard from '../components/ChecklistCard'
 
