@@ -12,10 +12,10 @@ export function InfoAlert({ children, icon, onClick, className }) {
     )
 }
 
-export function DangerAlert({ children, icon, onClick, className }) {
+export function DangerAlert({ children, icon=false, onClick=null, className="" }) {
     return (
         <div onClick={onClick} className={`p-4 ${marginClass} text-md text-red-700 bg-red-100 ${onClick && 'hover:bg-red-200 hover:dark:bg-red-300'} rounded-lg dark:bg-red-200 dark:text-red-800 flex items-center ${className}`} role="alert">
-            { icon || <span className="font-medium">Error!</span> }
+            { icon || <span className="mr-2 font-medium">Error!</span> }
             {children}
         </div>
     )

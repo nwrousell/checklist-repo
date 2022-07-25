@@ -53,6 +53,7 @@ export default function CreateChecklist(){
         </div>
     )
 }
+
 function TaskForm({ setTask }){
     const [title, setTitle] = useState(null)
     const [subText, setSubText] = useState(null)
