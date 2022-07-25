@@ -63,15 +63,15 @@ export default function Layout({ children }) {
                 {children}
             </FirebaseContext.Provider>
         )
-}
+    }
 
     return (
         <FirebaseContext.Provider value={{ auth, db }}>
             <div className={`min-h-screen ${darkMode && 'dark bg-gray-800'}`}>
                 <div className="hidden md:flex">
-                    <LeftSidebar userLoggedIn={user} router={router} links={LEFT_SIDEBAR_LINKS}  />
+                    <LeftSidebar userLoggedIn={user} router={router} links={LEFT_SIDEBAR_LINKS} />
                     <div className="flex flex-col w-full">
-                        <TopBar darkMode={darkMode} setDarkMode={setDarkMode} />
+                        <TopBar darkMode={darkMode} setDarkMode={setDarkMode} displayName={user && user.displayName} photoURL={user && user.photoURL} />
                         <div className="h-full px-8 pb-8">
                             {children}
                         </div>
