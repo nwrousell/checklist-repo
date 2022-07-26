@@ -7,21 +7,6 @@ import Spinner from "../ui/Spinner"
 
 import { AiFillHeart } from 'react-icons/ai'
 
-const DUMMY_CHECKLIST: Checklist = {
-    title: 'How to cook an omelette',
-    description: 'How to cook a french-style omelette. Pretty quick.',
-    author: 'Noah Rousell',
-    private: false,
-    items: [
-        { title: 'Gather ingredients' },
-        { title: 'Crack eggs', subText: "Not too hard" },
-        { title: 'Whisk eggs' },
-        { title: 'Heat up pan' },
-    ],
-    tags: [],
-    hearts: 52,
-}
-
 import { FirebaseContext } from "../components/Layout"
 import { doc, getDoc } from "firebase/firestore"
 
@@ -53,7 +38,7 @@ export default function UseChecklist({ }) {
             <div className="flex flex-wrap justify-between mb-2">
                 <Heading className="mr-4">{checklist.title}</Heading>
                 <div className="flex items-center ">
-                    <Text className="font-semibold">{ checklist.hearts }</Text>
+                    <Text className="font-semibold">{ checklist.favorites }</Text>
                     <AiFillHeart size={18} className="ml-1 text-red-500" />
                 </div>
             </div>

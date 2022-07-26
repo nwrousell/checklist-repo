@@ -1,4 +1,4 @@
-import type { ChecklistItem } from "../types"
+import type { ChecklistItem } from "./Checklist"
 
 import Heading from "../ui/Heading"
 import Text from "../ui/Text"
@@ -9,7 +9,7 @@ import Subheading from '../ui/Subheading'
 import { AiFillHeart } from 'react-icons/ai'
 import { useRouter } from "next/router"
 
-export default function ChecklistCard({ title, description, items, hearts, tags, docId="", author }){
+export default function ChecklistCard({ title, description, items, favorites, tags, docId="", author }){
     const router = useRouter()
 
     return (
@@ -24,7 +24,7 @@ export default function ChecklistCard({ title, description, items, hearts, tags,
                 <div className="flex justify-between">
                     <Subheading >{ title }</Subheading>
                     <div className="flex items-center mb-2">
-                        <Text className="font-semibold">{ hearts }</Text>
+                        <Text className="font-semibold">{ favorites }</Text>
                         <AiFillHeart size={18} className="ml-1 text-red-500" />
                     </div>
                 </div>

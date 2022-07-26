@@ -13,7 +13,7 @@ interface Checklist {
     private: boolean;
     tags: string[];
     items: ChecklistItem[];
-    hearts: Number;
+    favorites: Number;
     docId?: string;
 }
 
