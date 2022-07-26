@@ -7,8 +7,11 @@ import Checklist from "./Checklist"
 import Subheading from '../ui/Subheading'
 
 import { AiFillHeart } from 'react-icons/ai'
+import { useRouter } from "next/router"
 
-export default function ChecklistCard({ title, description, items, hearts, tags }){
+export default function ChecklistCard({ title, description, items, hearts, tags, docId="", author }){
+    const router = useRouter()
+
     return (
         <div className="overflow-hidden border border-gray-200 rounded-lg dark:border-gray-500 h-min">
             <div className="flex justify-center p-2 overflow-hidden bg-gray-100 dark:bg-gray-600 h-28">
@@ -27,7 +30,7 @@ export default function ChecklistCard({ title, description, items, hearts, tags 
                 </div>
                 <Text small className="mb-4">{ description }</Text>
                 <div className="flex">
-                    <Button small title="Check it out" onClick={() => console.log("Go to checklist "+title)} />
+                    <Button small title="Check it out" onClick={() => router.push(`/use-checklist?id=${docId}`)} />
                 </div>
             </div>
         </div>

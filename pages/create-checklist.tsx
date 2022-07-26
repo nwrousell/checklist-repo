@@ -16,6 +16,12 @@ import useChecklist from "../hooks/useChecklist";
 import { MdAdd } from "react-icons/md";
 
 import { FirebaseContext } from "../components/Layout";
+import { addDoc, collection } from "firebase/firestore";
+import Overlay from "../ui/Overlay";
+import Spinner from '../ui/Spinner'
+import { ToastSuccess } from '../ui/Toasts'
+
+type PageState = 'editing' | 'adding_doc' | 'success'
 
 export default function CreateChecklist(){
     const { db, userDoc, } = useContext(FirebaseContext)
@@ -23,6 +29,7 @@ export default function CreateChecklist(){
     const [newItem, setNewItem] = useState<ChecklistItem>(null)
 
     const [itemFormModal, setItemFormModal] = useState(false)
+    const [state, setState] = useState<PageState>('editing')
 
     const handleModalAction = () => {
         setItemFormModal(false)
@@ -30,7 +37,12 @@ export default function CreateChecklist(){
     }
 
     const saveChecklist = () => {
+        if(state === 'adding_doc') return
 
+        const checklistCollectionRef = collection(db, 'checklists')
+        addDoc(checklistCollectionRef, checklist)
+        .then(() => setState('success'))
+        setState('adding_doc')
     }
 
     return (
@@ -52,6 +64,23 @@ export default function CreateChecklist(){
                 <AddButton onClick={() => setItemFormModal(true)} />
                 <Button stretch title="Save Checklist" className="mt-4 md:hidden" onClick={saveChecklist} />
             </div>
+
+            { state === 'adding_doc' && 
+                <>
+                    <Overlay light />
+                    <div className="fixed inset-0 z-50 flex items-center justify-center">
+                        <Spinner />
+                    </div>
+                </> 
+            }
+            { state === 'success' &&
+                <>
+                    <Overlay light />
+                    <div className="fixed inset-0 z-50 flex items-center justify-center">
+                        <ToastSuccess onClick={() => setState('editing')}>Checklist saved successfully</ToastSuccess>
+                    </div>
+                </>
+            }
 
             { itemFormModal && <Modal action={handleModalAction} actionTitle="Add Item" content={<TaskForm setTask={setNewItem} />} close={() => setItemFormModal(false)} /> }
         </div>

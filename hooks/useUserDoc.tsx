@@ -3,9 +3,9 @@ import { useState, useEffect } from "react"
 
 export interface User {
     uid?: string;
-    name?: string;
-    favoritedChecklists?: DocumentReference[];
-    createdChecklists?: DocumentReference[];
+    name: string;
+    favoritedChecklists: string[];
+    createdChecklists: string[];
     [key: string]: any;
 }
 
@@ -24,7 +24,7 @@ export default function useUserDoc(user, db){
 
         const userDocRef = doc(db, "users", user.uid)
         const unsub = onSnapshot(userDocRef, (doc) => {
-            if(doc.exists()) setUserDoc(doc.data())
+            if(doc.exists()) setUserDoc(doc.data() as User)
             else createUserDoc(userDocRef)
         })
 

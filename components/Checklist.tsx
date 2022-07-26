@@ -1,3 +1,4 @@
+import { DocumentReference } from 'firebase/firestore';
 import { useReducer, } from 'react'
 import NumberedCheckbox from "../ui/NumberedCheckbox"
 
@@ -13,6 +14,7 @@ interface Checklist {
     tags: string[];
     items: ChecklistItem[];
     hearts: Number;
+    docId?: string;
 }
 
 export interface ChecklistItem {
