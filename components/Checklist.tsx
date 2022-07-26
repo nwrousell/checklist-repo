@@ -8,9 +8,11 @@ function reducer(state: boolean[], action){
 interface Checklist {
     title: string;
     description: string;
+    author: string;
+    private: boolean;
     tags: string[];
     items: ChecklistItem[];
-    hearts: Number
+    hearts: Number;
 }
 
 export interface ChecklistItem {

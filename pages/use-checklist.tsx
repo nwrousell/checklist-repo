@@ -6,9 +6,11 @@ import HR from "../ui/HR"
 
 import { AiFillHeart } from 'react-icons/ai'
 
-const DUMMY_CHECKLIST = {
+const DUMMY_CHECKLIST: Checklist = {
     title: 'How to cook an omelette',
     description: 'How to cook a french-style omelette. Pretty quick.',
+    author: 'Noah Rousell',
+    private: false,
     items: [
         { title: 'Gather ingredients' },
         { title: 'Crack eggs', subText: "Not too hard" },

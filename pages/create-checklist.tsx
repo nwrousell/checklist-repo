@@ -11,12 +11,14 @@ import { useEffect, useState } from "react";
 import Button from "../ui/Button";
 import HR from "../ui/HR";
 import Checklist, { ChecklistItem } from "../components/Checklist";
+import Toggle from "../ui/Toggle";
 
 
 export default function CreateChecklist(){
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
     const [tags, setTags] = useState<string[]>(null)
+    const [isPrivate, setIsPrivate] = useState(false)
 
     const [newItem, setNewItem] = useState<ChecklistItem>(null)
     const [items, setItems] = useState<ChecklistItem[]>([])
@@ -40,6 +42,7 @@ export default function CreateChecklist(){
                 <HR />
                 <TextInput title='Title' setValue={setTitle} className="mb-2" />
                 <TextArea title='description' setValue={setDescription} className="mb-2" />
+                <Toggle title='Private' setValue={setIsPrivate} />
                 {/* <TagsInput onTagsUpdate={setTags} /> */}
             </div>
             <div>

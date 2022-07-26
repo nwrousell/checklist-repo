@@ -8,18 +8,22 @@ const DUMMY_CHECKLISTS: Checklist[] = [
     {
         title: 'How to cook an omelette',
         description: 'How to cook a french-style omelette. Pretty quick.',
+        author: 'Noah Rousell',
         items: [
             {title: 'Gather ingredients' },
             {title: 'Crack eggs', subText: "Not too hard" },
             {title: 'Whisk eggs' },
             {title: 'Heat up pan' },
         ],
+        private: false,
         tags: [],
         hearts: 52,
     },
     {
         title: 'How to cook an omelette',
         description: 'How to cook a french-style omelette. Pretty quick.',
+        author: 'Noah Rousell',
+        private: false,
         items: [
             {title: 'Gather ingredients' },
             {title: 'Crack eggs', subText: "Not too hard" },
@@ -32,6 +36,8 @@ const DUMMY_CHECKLISTS: Checklist[] = [
     {
         title: 'How to cook an omelette',
         description: 'How to cook a french-style omelette. Pretty quick.',
+        author: 'Noah Rousell',
+        private: false,
         items: [
             {title: 'Gather ingredients' },
             {title: 'Crack eggs', subText: "Not too hard" },
