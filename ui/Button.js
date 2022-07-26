@@ -14,6 +14,6 @@ export default function Button({ title, stretch=false, small=false, color="prima
         <button 
             type="button" 
             onClick={onClick}
-            className={`focus:ring-4 font-medium ${sizeClasses} focus:outline-none ${colorClasses} ${stretch && 'w-full'} ${className}`}>{title}</button>
+            className={`select-none focus:ring-4 font-medium ${sizeClasses} focus:outline-none ${colorClasses} ${stretch && 'w-full'} ${className}`}>{title}</button>
     )
   }

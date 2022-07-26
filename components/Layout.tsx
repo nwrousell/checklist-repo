@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { AiOutlineStar } from 'react-icons/ai'
 import { MdAdd } from 'react-icons/md'
 import { RiFileList3Line } from 'react-icons/ri'
+import { TbChecklist } from 'react-icons/tb'
 import { useDarkMode } from "../hooks/useDarkMode";
 
 import { initializeApp } from "firebase/app";
@@ -34,6 +35,11 @@ export const LEFT_SIDEBAR_LINKS = [
         href: "/favorites",
         Icon: AiOutlineStar,
     },
+    {
+        title: 'My Checklists',
+        href: "/my-checklists",
+        Icon: TbChecklist,
+    }
 ]
 
 const PATHNAMES_EXCLUDED_FROM_LAYOUT = ['/login']
@@ -53,9 +59,10 @@ const db = initializeFirestore(app, {})
 
 const blankUserDoc: User = {
     uid: '',
-    name: '',
+    name: 'Unknown User',
     createdChecklists: [],
     favoritedChecklists: [],
+    exists: false,
 }
 export const FirebaseContext = createContext({ auth, db, userDoc: blankUserDoc })
 

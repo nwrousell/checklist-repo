@@ -12,26 +12,32 @@ import { doc, getDoc } from "firebase/firestore"
 
 export default function UseChecklist({ }) {
     const [checklist, setChecklist] = useState<Checklist>()
-    const [noAccess, setNoAccess] = useState(false)
+    const [error, setError] = useState('')
     const { db, userDoc } = useContext(FirebaseContext)
 
     useEffect(() => {
         async function getChecklist(){
             const checklistDocId = window.location.href.split("=")[1]
             const checklistDocRef = doc(db, 'checklists', checklistDocId)
+
+
             const snapshot = await getDoc(checklistDocRef)
+            if(!snapshot.exists()){
+                setError('This checklist no longer exists.')
+                return
+            }
 
             const userHasAccess = !(snapshot.data().private && !userDoc.createdChecklists.includes(checklistDocId))
             if(!userHasAccess){
-                setNoAccess(true)
+                setError('This checklist is private. Log in with the correct account if you created it.')
             }else setChecklist(snapshot.data() as Checklist)
         }
 
         getChecklist()
     }, [])
 
+    if(error) return <div className="flex items-center justify-center h-full"><Heading>{ error }</Heading></div>
     if(checklist === undefined) return <div className="flex items-center justify-center h-full"><Spinner /></div>
-    if(noAccess) return <div className="flex items-center justify-center h-full"><Heading>This checklist is private. Log in with the correct account if you created it.</Heading></div>
 
     return (
         <div className="h-full">

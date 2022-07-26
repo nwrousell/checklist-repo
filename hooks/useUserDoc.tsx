@@ -24,7 +24,7 @@ export default function useUserDoc(user, db){
 
         const userDocRef = doc(db, "users", user.uid)
         const unsub = onSnapshot(userDocRef, (doc) => {
-            if(doc.exists()) setUserDoc(doc.data() as User)
+            if(doc.exists()) setUserDoc({...doc.data() as User, uid: user.uid, exists: true})
             else createUserDoc(userDocRef)
         })
 

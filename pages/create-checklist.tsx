@@ -16,7 +16,7 @@ import useChecklist from "../hooks/useChecklist";
 import { MdAdd } from "react-icons/md";
 
 import { FirebaseContext } from "../components/Layout";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, updateDoc, doc, arrayUnion } from "firebase/firestore";
 import Overlay from "../ui/Overlay";
 import Spinner from '../ui/Spinner'
 import { ToastSuccess } from '../ui/Toasts'
@@ -36,13 +36,22 @@ export default function CreateChecklist(){
         addChecklistItem(newItem)
     }
 
-    const saveChecklist = () => {
+    const saveChecklist = async () => {
         if(state === 'adding_doc') return
 
-        const checklistCollectionRef = collection(db, 'checklists')
-        addDoc(checklistCollectionRef, checklist)
-        .then(() => setState('success'))
         setState('adding_doc')
+
+        const checklistCollectionRef = collection(db, 'checklists')
+        const checklistDocRef = await addDoc(checklistCollectionRef, checklist)
+
+        if(userDoc.exists){
+            const userDocRef = doc(db, 'users', userDoc.uid)
+            await updateDoc(userDocRef, {
+                createdChecklists: arrayUnion(checklistDocRef.id)
+            })
+        }
+
+        setState('success')
     }
 
     return (
@@ -52,7 +61,7 @@ export default function CreateChecklist(){
                 <HR />
                 <TextInput title='Title' setValue={setTitle} className="mb-2" />
                 <TextArea title='description' setValue={setDescription} className="mb-2" />
-                <Toggle title='Private' setValue={setIsPrivate} />
+                <Toggle title={`Private ${!userDoc.exists ? '(Must be logged in)' : ''}`} setValue={setIsPrivate} disabled={!userDoc.exists} />
                 {/* <TagsInput onTagsUpdate={setTags} /> */}
                 <Button stretch title="Save Checklist" className="hidden mt-4 md:block" onClick={saveChecklist} />
             </div>
@@ -104,7 +113,7 @@ function TaskForm({ setTask }){
 
 function AddButton({onClick}){
     return (
-        <div className="inline-flex items-center px-4 py-1 border-2 border-gray-200 border-dashed rounded cursor-pointer hover:bg-gray-50" onClick={onClick}>
+        <div className="inline-flex items-center px-4 py-1 border-2 border-gray-200 border-dashed rounded cursor-pointer dark:hover:bg-gray-700 dark:border-gray-600 hover:bg-gray-50" onClick={onClick}>
             <MdAdd
                 size={24}
                 className="mr-2 text-gray-500"

@@ -6,10 +6,10 @@ import Button from "../ui/Button"
 import Checklist from "./Checklist"
 import Subheading from '../ui/Subheading'
 
-import { AiFillHeart } from 'react-icons/ai'
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
 import { useRouter } from "next/router"
 
-export default function ChecklistCard({ title, description, items, favorites, tags, docId="", author }){
+export default function ChecklistCard({ title, description, items, favorites, favoritedByUser, onFavorite, tags, docId="", author }){
     const router = useRouter()
 
     return (
@@ -22,13 +22,15 @@ export default function ChecklistCard({ title, description, items, favorites, ta
             </div>
             <div className="p-4 bg-white dark:bg-gray-800">
                 <div className="flex justify-between">
-                    <Subheading >{ title }</Subheading>
-                    <div className="flex items-center mb-2">
-                        <Text className="font-semibold">{ favorites }</Text>
-                        <AiFillHeart size={18} className="ml-1 text-red-500" />
+                    <Subheading className="select-none">{ title }</Subheading>
+                    <div className="flex items-center mb-2 cursor-pointer" onClick={() => onFavorite(!favoritedByUser, docId)}>
+                        <Text className="font-semibold select-none">{ favorites }</Text>
+                        { favoritedByUser ? <AiFillHeart size={18} className="ml-1 text-red-500" /> :
+                            <AiOutlineHeart size={18} className="ml-1 text-red-500" />
+                        }
                     </div>
                 </div>
-                <Text small className="mb-4">{ description }</Text>
+                <Text small className="mb-4 select-none">{ description }</Text>
                 <div className="flex">
                     <Button small title="Check it out" onClick={() => router.push(`/use-checklist?id=${docId}`)} />
                 </div>
