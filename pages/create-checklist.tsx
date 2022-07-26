@@ -6,33 +6,26 @@ import Checkbox from '../ui/Checkbox'
 import TagsInput from "../components/TagsInput";
 import Modal from '../ui/Modal'
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
 import Button from "../ui/Button";
 import HR from "../ui/HR";
 import Checklist, { ChecklistItem } from "../components/Checklist";
 import Toggle from "../ui/Toggle";
+import useChecklist from "../hooks/useChecklist";
 
+import { FirebaseContext } from "../components/Layout";
 
 export default function CreateChecklist(){
-    const [title, setTitle] = useState("")
-    const [description, setDescription] = useState("")
-    const [tags, setTags] = useState<string[]>(null)
-    const [isPrivate, setIsPrivate] = useState(false)
-
+    const { db, userDoc, } = useContext(FirebaseContext)
+    const [checklist, setTitle, setDescription, setTags, setIsPrivate, addChecklistItem] = useChecklist(userDoc.name)
     const [newItem, setNewItem] = useState<ChecklistItem>(null)
-    const [items, setItems] = useState<ChecklistItem[]>([])
 
     const [itemFormModal, setItemFormModal] = useState(false)
 
-    const addChecklistItem = () => {
-        const temp = []
-        for(let item of items) temp.push(item)
-
-        temp.push(newItem)
-        setItems(temp)
-
+    const handleModalAction = () => {
         setItemFormModal(false)
+        addChecklistItem(newItem)
     }
 
     return (
@@ -48,12 +41,12 @@ export default function CreateChecklist(){
             <div>
                 <Heading>Checklist Items</Heading>
                 <HR />
-                { items.length==0 && <Text className="mb-2" small>No items have been added, click the button below to add the first.</Text> }
-                <Checklist items={items} disabled large />
+                { checklist.items.length==0 && <Text className="mb-2" small>No items have been added, click the button below to add the first.</Text> }
+                <Checklist items={checklist.items} disabled large />
                 <Button title="Add Item" onClick={() => setItemFormModal(true)} />
             </div>
 
-            { itemFormModal && <Modal action={addChecklistItem} actionTitle="Add Item" content={<TaskForm setTask={setNewItem} />} close={() => setItemFormModal(false)} /> }
+            { itemFormModal && <Modal action={handleModalAction} actionTitle="Add Item" content={<TaskForm setTask={setNewItem} />} close={() => setItemFormModal(false)} /> }
         </div>
     )
 }
