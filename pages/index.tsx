@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import { useContext, useEffect, useState } from 'react'
 import Checklist, { ChecklistItem } from '../components/Checklist'
 
-import { query, limit, collection, getDocs, updateDoc, doc, arrayUnion, arrayRemove, increment, onSnapshot } from 'firebase/firestore'
+import { query, limit, collection, getDocs, updateDoc, doc, arrayUnion, arrayRemove, increment, onSnapshot, where } from 'firebase/firestore'
 
 import ChecklistCard from '../components/ChecklistCard'
 
@@ -16,7 +16,7 @@ const Home: NextPage = () => {
 
     useEffect(() => {
             const checklistsCollectionRef = collection(db, 'checklists')
-            const q = query(checklistsCollectionRef, limit(CHECKLISTS_TO_LOAD))
+            const q = query(checklistsCollectionRef, where('private', '==', false), limit(CHECKLISTS_TO_LOAD))
 
             const unsub = onSnapshot(q, (querySnapshot) => {
                 let temp: Checklist[] = []
@@ -55,7 +55,7 @@ const Home: NextPage = () => {
 
     return (
         <div className="grid h-full grid-cols-1 gap-4 p-4 md:p-8 lg:gap-8 md:grid-cols-2 lg:grid-cols-3 bg-gray-50 dark:bg-gray-700">
-            { checklists.map((props: Checklist, i) => <ChecklistCard onFavorite={onFavorite} favoritedByUser={userDoc.favoritedChecklists.includes(props.docId)} {...props} key={i} />) }
+            { checklists.map((props: Checklist, i) => <ChecklistCard isPrivate={false} onFavorite={onFavorite} favoritedByUser={userDoc.favoritedChecklists.includes(props.docId)} {...props} key={i} />) }
         </div>
     )
 }

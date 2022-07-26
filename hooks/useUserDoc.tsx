@@ -20,7 +20,10 @@ export default function useUserDoc(user, db){
     const [userDoc, setUserDoc] = useState(blankUserDoc)
 
     useEffect(() => {
-        if(!user) return
+        if(!user) {
+            setUserDoc(blankUserDoc)
+            return
+        }
 
         const userDocRef = doc(db, "users", user.uid)
         const unsub = onSnapshot(userDocRef, (doc) => {

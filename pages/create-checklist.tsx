@@ -65,7 +65,7 @@ export default function CreateChecklist(){
                 {/* <TagsInput onTagsUpdate={setTags} /> */}
                 <Button stretch title="Save Checklist" className="hidden mt-4 md:block" onClick={saveChecklist} />
             </div>
-            <div>
+            <div className="mt-8 md:mt-0">
                 <Heading>Checklist Items</Heading>
                 <HR />
                 { checklist.items.length==0 && <Text className="mb-2" small>No items have been added, click the button below to add the first.</Text> }
