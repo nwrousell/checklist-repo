@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import { AiOutlineStar } from 'react-icons/ai'
+import { AiOutlineStar, AiOutlineUser } from 'react-icons/ai'
 import { MdAdd } from 'react-icons/md'
 import { RiFileList3Line } from 'react-icons/ri'
 import { TbChecklist } from 'react-icons/tb'
@@ -39,6 +39,11 @@ export const LEFT_SIDEBAR_LINKS = [
         title: 'My Checklists',
         href: "/my-checklists",
         Icon: TbChecklist,
+    },
+    {
+        title: 'Profile',
+        href: "/profile",
+        Icon: AiOutlineUser
     }
 ]
 
@@ -72,7 +77,6 @@ export default function Layout({ children }) {
     const router = useRouter()
     const [user, loading, error] = useAuthState(auth)
     const userDoc = useUserDoc(user, db)
-
 
     if (PATHNAMES_EXCLUDED_FROM_LAYOUT.includes(router.pathname)) {
         return (

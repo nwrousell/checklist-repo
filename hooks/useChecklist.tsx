@@ -8,7 +8,7 @@ const BASE_CHECKLIST: Checklist = {
     private: false,
     items: [],
     author: '',
-    hearts: 0
+    favorites: 0
 }
 
 export default function useChecklist(author){
@@ -29,8 +29,9 @@ export default function useChecklist(author){
     }
 
     useEffect(() => {
+        console.log(isPrivate)
         const temp: Checklist = {
-            title, description, tags, private: isPrivate, items, author, hearts: 0,
+            title, description, tags, private: isPrivate, items, author,
         }
         setChecklist(temp)
     }, [title, description, tags, isPrivate, items])

@@ -6,7 +6,9 @@ export interface User {
     name: string;
     favoritedChecklists: string[];
     createdChecklists: string[];
-    [key: string]: any;
+    itemsCompleted: number;
+    checklistCompletions: number;
+    exists: boolean;
 }
 
 const blankUserDoc: User = {
@@ -14,6 +16,9 @@ const blankUserDoc: User = {
     name: '',
     createdChecklists: [],
     favoritedChecklists: [],
+    itemsCompleted: 0,
+    checklistCompletions: 0,
+    exists: false,
 }
 
 export default function useUserDoc(user, db){

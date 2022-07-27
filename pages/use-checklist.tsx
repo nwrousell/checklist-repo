@@ -8,7 +8,8 @@ import Spinner from "../ui/Spinner"
 import { AiFillHeart } from 'react-icons/ai'
 
 import { FirebaseContext } from "../components/Layout"
-import { doc, getDoc } from "firebase/firestore"
+import { doc, Firestore, getDoc, increment, updateDoc } from "firebase/firestore"
+import { User } from "../hooks/useUserDoc"
 
 export default function UseChecklist({ }) {
     const [checklist, setChecklist] = useState<Checklist>()
@@ -27,8 +28,9 @@ export default function UseChecklist({ }) {
                 return
             }
 
-            const userHasAccess = !(snapshot.data().private && !userDoc.createdChecklists.includes(checklistDocId))
-            if(!userHasAccess){
+            // ! - this is forbidding me when it shouldn't sometimes
+            const notAllowed = (snapshot.data().private && !userDoc.createdChecklists.includes(checklistDocId))
+            if(notAllowed){
                 setError('This checklist is private. Log in with the correct account if you created it.')
             }else setChecklist(snapshot.data() as Checklist)
         }
@@ -36,7 +38,7 @@ export default function UseChecklist({ }) {
         getChecklist()
     }, [])
 
-    if(error) return <div className="flex items-center justify-center h-full"><Heading>{ error }</Heading></div>
+    if(error) return <div className="flex items-center justify-center h-full text-center"><Heading>{ error }</Heading></div>
     if(checklist === undefined) return <div className="flex items-center justify-center h-full"><Spinner /></div>
 
     return (
@@ -50,7 +52,23 @@ export default function UseChecklist({ }) {
             </div>
             <Text small>{checklist.description}</Text>
             <HR />
-            <Checklist items={checklist.items} large />
+            <Checklist onItemCompleted={(value) => onItemCompleted(value, db, userDoc)} onChecklistCompleted={(value) => onChecklistCompleted(value, db, userDoc)} items={checklist.items} large />
         </div>
     )
+}
+
+function onItemCompleted(value: number, db: Firestore, userDoc: User){
+    const userDocRef = doc(db, 'users', userDoc.uid)
+
+    updateDoc(userDocRef, {
+        itemsCompleted: increment(value)
+    })
+}
+
+function onChecklistCompleted(value: number, db: Firestore, userDoc: User){
+    const userDocRef = doc(db, 'users', userDoc.uid)
+
+    updateDoc(userDocRef, {
+        checklistCompletions: increment(value)
+    })
 }

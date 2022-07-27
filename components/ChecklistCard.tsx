@@ -7,9 +7,10 @@ import Checklist from "./Checklist"
 import Subheading from '../ui/Subheading'
 
 import { AiFillHeart, AiOutlineHeart, AiFillLock } from 'react-icons/ai'
+import { FiEdit2 } from 'react-icons/fi'
 import { useRouter } from "next/router"
 
-export default function ChecklistCard({ title, description, items, isPrivate, favorites, favoritedByUser, onFavorite, tags, docId="", author }){
+export default function ChecklistCard({ title, description, items, isPrivate, canEdit=false, favorites, favoritedByUser, onFavorite, tags, docId="", author }){
     const router = useRouter()
 
     return (
@@ -32,9 +33,9 @@ export default function ChecklistCard({ title, description, items, isPrivate, fa
                     </div>
                 </div>
                 <Text small className="mb-4 select-none">{ description }</Text>
-                <div className="flex">
+                <div className="flex items-center justify-between">
                     <Button small title="Check it out" onClick={() => router.push(`/use-checklist?id=${docId}`)} />
-                </div>
+                    { canEdit && <FiEdit2 onClick={() => router.push(`/create-checklist?id=${docId}`)} size={36} className="p-2 text-gray-500 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-300" />}                </div>
             </div>
         </div>
     )
