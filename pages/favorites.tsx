@@ -51,7 +51,7 @@ export default function Favorites(){
 
     return (
         <div className="relative grid h-full grid-cols-1 gap-4 p-4 md:p-8 lg:gap-8 md:grid-cols-2 lg:grid-cols-3 bg-gray-50 dark:bg-gray-700">
-            { checklists.map((props: Checklist, i) => <ChecklistCard isPrivate={props.private} onFavorite={onFavorite} favoritedByUser={userDoc.favoritedChecklists.includes(props.docId)} {...props} key={i} />) }
+            { checklists.map((props: Checklist, i) => <ChecklistCard isPrivate={props.private} favorites={props.favorites} onFavorite={onFavorite} favoritedByUser={userDoc.favoritedChecklists.includes(props.docId)} {...props} key={i} />) }
             { checklists.length === 0 && <Text className="absolute transform -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2">You haven't favorited any checklists yet. <span className="underline cursor-pointer hover:no-underline" onClick={() => router.push("/")}>Browse</span></Text> }
         </div>
     )

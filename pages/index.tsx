@@ -55,7 +55,7 @@ const Home: NextPage = () => {
 
     return (
         <div className="grid h-full grid-cols-1 gap-4 p-4 md:p-8 lg:gap-8 md:grid-cols-2 lg:grid-cols-3 bg-gray-50 dark:bg-gray-700">
-            { checklists.map((props: Checklist, i) => <ChecklistCard isPrivate={false} onFavorite={onFavorite} favoritedByUser={userDoc.favoritedChecklists.includes(props.docId)} {...props} key={i} />) }
+            { checklists.map((props: Checklist, i) => <ChecklistCard isPrivate={false} favorites={props.favorites} onFavorite={onFavorite} favoritedByUser={userDoc.favoritedChecklists.includes(props.docId)} {...props} key={i} />) }
         </div>
     )
 }
