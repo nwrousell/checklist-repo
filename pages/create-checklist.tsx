@@ -6,7 +6,7 @@ import Checkbox from '../ui/Checkbox'
 import TagsInput from "../components/TagsInput";
 import Modal from '../ui/Modal'
 
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, memo, useMemo } from "react";
 
 import Button from "../ui/Button";
 import HR from "../ui/HR";
@@ -16,20 +16,45 @@ import useChecklist from "../hooks/useChecklist";
 import { MdAdd } from "react-icons/md";
 
 import { FirebaseContext } from "../components/Layout";
-import { addDoc, collection, updateDoc, doc, arrayUnion } from "firebase/firestore";
+import { addDoc, collection, updateDoc, doc, arrayUnion, getDoc } from "firebase/firestore";
 import Overlay from "../ui/Overlay";
 import Spinner from '../ui/Spinner'
 import { ToastSuccess } from '../ui/Toasts'
 
-type PageState = 'editing' | 'adding_doc' | 'success'
+type PageState = 'creating' | 'starting' | 'loading' | 'editing' | 'adding_doc' | 'success'
 
-export default function CreateChecklist(){
+export default function CreateChecklist() {
     const { db, userDoc, } = useContext(FirebaseContext)
     const [checklist, setTitle, setDescription, setTags, setIsPrivate, addChecklistItem] = useChecklist(userDoc.name)
     const [newItem, setNewItem] = useState<ChecklistItem>(null)
 
     const [itemFormModal, setItemFormModal] = useState(false)
-    const [state, setState] = useState<PageState>('editing')
+    const [state, setState] = useState<PageState>('starting')
+    const [loadedChecklist, setLoadedChecklist] = useState(false)
+
+    useEffect(() => {
+        if (window.location.href.split("?").length == 1) return
+        setState('loading')
+
+        async function getChecklist() {
+            const checklistDocId = window.location.href.split("=")[1]
+            const checklistDocRef = doc(db, 'checklists', checklistDocId)
+
+            const snapshot = await getDoc(checklistDocRef)
+            const { title, description, tags, private: isPrivate, items, } = snapshot.data()
+
+            setTitle(title)
+            setDescription(description)
+            setTags(tags)
+            setIsPrivate(isPrivate)
+            for (let item of items) addChecklistItem(item)
+
+            setLoadedChecklist(true)
+            setState('editing')
+        }
+
+        getChecklist()
+    }, [])
 
     const handleModalAction = () => {
         setItemFormModal(false)
@@ -37,52 +62,70 @@ export default function CreateChecklist(){
     }
 
     const saveChecklist = async () => {
-        if(state === 'adding_doc') return
-
-        setState('adding_doc')
+        if (state === 'adding_doc') return
 
         const checklistCollectionRef = collection(db, 'checklists')
-        const checklistDocRef = await addDoc(checklistCollectionRef, checklist)
 
-        if(userDoc.exists){
-            const userDocRef = doc(db, 'users', userDoc.uid)
-            await updateDoc(userDocRef, {
-                createdChecklists: arrayUnion(checklistDocRef.id)
-            })
+        switch (state) {
+            case 'creating':
+                setState('adding_doc')
+                const checklistDocRef = await addDoc(checklistCollectionRef, { ...checklist, favorites: 0 })
+
+                if (userDoc.exists) {
+                    const userDocRef = doc(db, 'users', userDoc.uid)
+                    await updateDoc(userDocRef, {
+                        createdChecklists: arrayUnion(checklistDocRef.id)
+                    })
+                }
+                break;
+            case 'editing':
+                setState('adding_doc')
+                console.log("saving checklist")
         }
-
         setState('success')
     }
+
+    if (state === 'loading' || state === 'starting') return (
+        <div className="relative w-full h-full">
+            <Overlay light />
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+                <Spinner />
+            </div>
+        </div>
+    )
+
+    // TODO - figure out how state and re-renders work better (and understand useMemo, memo, and useCallback) 
+    // * So I can figure out how to make the toggle load the value correctly (I'm probably not supposed to do it this way and that's why it's hard so find the right way)
 
     return (
         <div className="relative h-full md:grid md:grid-cols-2 md:gap-8">
             <div>
-                <Heading>Create Checklist</Heading>
+                <Heading>{state == 'editing' ? 'Edit' : 'Create'} Checklist</Heading>
                 <HR />
-                <TextInput title='Title' setValue={setTitle} className="mb-2" />
-                <TextArea title='description' setValue={setDescription} className="mb-2" />
-                <Toggle title={`Private ${!userDoc.exists ? '(Must be logged in)' : ''}`} setValue={setIsPrivate} disabled={!userDoc.exists} />
+                <TextInput initialValue={checklist.title} title='Title' setValue={setTitle} className="mb-2" />
+                <TextArea initialValue={checklist.description} title='description' setValue={setDescription} className="mb-2" />
+                <Toggle initialValue={checklist.private} title={`Private ${!userDoc.exists ? '(Must be logged in)' : ''}`} setValue={setIsPrivate} disabled={!userDoc.exists} />
                 {/* <TagsInput onTagsUpdate={setTags} /> */}
                 <Button stretch title="Save Checklist" className="hidden mt-4 md:block" onClick={saveChecklist} />
             </div>
             <div className="mt-8 md:mt-0">
                 <Heading>Checklist Items</Heading>
                 <HR />
-                { checklist.items.length==0 && <Text className="mb-2" small>No items have been added, click the button below to add the first.</Text> }
+                {checklist.items.length == 0 && <Text className="mb-2" small>No items have been added, click the button below to add the first.</Text>}
                 <Checklist items={checklist.items} disabled large />
                 <AddButton onClick={() => setItemFormModal(true)} />
                 <Button stretch title="Save Checklist" className="mt-4 md:hidden" onClick={saveChecklist} />
             </div>
 
-            { state === 'adding_doc' && 
+            {(state === 'adding_doc') &&
                 <>
                     <Overlay light />
                     <div className="fixed inset-0 z-50 flex items-center justify-center">
                         <Spinner />
                     </div>
-                </> 
+                </>
             }
-            { state === 'success' &&
+            {state === 'success' &&
                 <>
                     <Overlay light />
                     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -91,12 +134,12 @@ export default function CreateChecklist(){
                 </>
             }
 
-            { itemFormModal && <Modal action={handleModalAction} actionTitle="Add Item" content={<TaskForm setTask={setNewItem} />} close={() => setItemFormModal(false)} /> }
+            {itemFormModal && <Modal action={handleModalAction} actionTitle="Add Item" content={<TaskForm setTask={setNewItem} />} close={() => setItemFormModal(false)} />}
         </div>
     )
 }
 
-function TaskForm({ setTask }){
+function TaskForm({ setTask }) {
     const [title, setTitle] = useState(null)
     const [subText, setSubText] = useState(null)
 
@@ -111,7 +154,7 @@ function TaskForm({ setTask }){
     )
 }
 
-function AddButton({onClick}){
+function AddButton({ onClick }) {
     return (
         <div className="inline-flex items-center px-4 py-1 border-2 border-gray-200 border-dashed rounded cursor-pointer dark:hover:bg-gray-700 dark:border-gray-600 hover:bg-gray-50" onClick={onClick}>
             <MdAdd
