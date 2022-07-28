@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-export default function NumberedCheckbox({ title, number, onComplete, subText = "", disabled = false, large, lastItem, className = "", highlight, }) {
+export default function NumberedCheckbox({ title, number, onComplete, subText = "", rightButton, disabled = false, large, lastItem, className = "", highlight, }) {
     const [completed, setCompleted] = useState(false)
 
     const handleClick = () => {
@@ -22,9 +22,12 @@ export default function NumberedCheckbox({ title, number, onComplete, subText = 
                         <div className={`${large ? 'w-0.75' : 'w-0.5'} ${(completed && !lastItem) ? 'h-full' : 'hidden'} bg-primary-700`} />
                     </div>
                 </div>
-                <div className={`w-full ${large ? 'mt-2' : 'mt-0.5'}  ml-2`}>
-                    <label onClick={() => !disabled && handleClick()} className="font-medium text-gray-900 cursor-pointer select-none text-md dark:text-gray-300">{title}</label>
-                    {subText && <HelperText text={subText} />}
+                <div className="flex justify-between w-full">
+                    <div className={`w-full ${large ? 'mt-2' : 'mt-0.5'}  ml-2`}>
+                        <label onClick={() => !disabled && handleClick()} className="font-medium text-gray-900 cursor-pointer select-none text-md dark:text-gray-300">{title}</label>
+                        {subText && <HelperText text={subText} />}
+                    </div>
+                    <div>{ rightButton }</div>
                 </div>
             </div>
         </>

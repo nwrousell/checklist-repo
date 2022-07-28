@@ -1,5 +1,6 @@
 import { DocumentReference } from 'firebase/firestore';
 import { useReducer, } from 'react'
+import { BiTrash } from 'react-icons/bi';
 import NumberedCheckbox from "../ui/NumberedCheckbox"
 
 interface Checklist {
@@ -23,7 +24,7 @@ function reducer(state: boolean[], action){
     return [ ...state.slice(0, action.index), action.value, ...state.slice(action.index+1) ]
 }
 
-function Checklist({ items, large = false, disabled = false, onItemCompleted=null, onChecklistCompleted=null, cutOff=999 }) {
+function Checklist({ items, large = false, disabled = false, onDelete=null, onItemCompleted=null, onChecklistCompleted=null, cutOff=999 }) {
     const [itemsStatus, dispatch] = useReducer(reducer, createArrayOfFalses(items.length))
 
     const onComplete = (value, i) => {
@@ -48,7 +49,7 @@ function Checklist({ items, large = false, disabled = false, onItemCompleted=nul
             let highlight = (lastChecked && !itemsStatus[i])
             if(itemsStatus[i]) lastChecked = true
             else lastChecked = false
-            return <NumberedCheckbox highlight={!disabled && highlight} {...props} lastItem={i+1==items.length} onComplete={(value) => onComplete(value, i)} key={i} number={i+1} large={large} disabled={disabled} />
+            return <NumberedCheckbox rightButton={onDelete && <DeleteButton large={large} onClick={() => onDelete(i)} />} highlight={!disabled && highlight} {...props} lastItem={i+1==items.length} onComplete={(value) => onComplete(value, i)} key={i} number={i+1} large={large} disabled={disabled} />
         })
     }
 
@@ -68,6 +69,12 @@ function countInstancesInArray(value: any, array: any[]){
     let count = 0
     for(const val of array) val === value && count++
     return count
+}
+
+function DeleteButton({ onClick, large=false }){
+    return (
+        <BiTrash onClick={onClick} size={24} className={`text-gray-300 dark:text-gray-700 dark:hover:text-red-500 cursor-pointer hover:text-red-500 ${large ? 'mt-2' : 'mt-0.5'}`} />
+    )
 }
 
 export default Checklist

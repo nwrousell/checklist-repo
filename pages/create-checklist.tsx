@@ -33,7 +33,10 @@ export default function CreateChecklist() {
     const [loadedChecklist, setLoadedChecklist] = useState<Checklist>()
 
     useEffect(() => {
-        if (window.location.href.split("?").length == 1) return
+        if (window.location.href.split("?").length == 1) {
+            setState('creating')
+            return
+        }
         setState('loading')
 
         async function getChecklist() {
@@ -95,6 +98,13 @@ export default function CreateChecklist() {
         setState('success')
     }
 
+    const onDeleteItem = (index) => {
+        console.log("ran: "+index)
+        const temp = [...checklist.items]
+        temp.splice(index, 1)
+        setItems(temp)
+    }
+
     if (state === 'loading' || state === 'starting') return (
         <div className="relative w-full h-full">
             <Overlay light />
@@ -112,9 +122,9 @@ export default function CreateChecklist() {
             <div>
                 <Heading>{state == 'editing' ? 'Edit' : 'Create'} Checklist</Heading>
                 <HR />
-                <TextInput initialValue={loadedChecklist.title} title='Title' setValue={setTitle} className="mb-2" />
-                <TextArea initialValue={loadedChecklist.description} title='description' setValue={setDescription} className="mb-2" />
-                <Toggle value={loadedChecklist.private} title={`Private ${!userDoc.exists ? '(Must be logged in)' : ''}`} setValue={setIsPrivate} disabled={!userDoc.exists} />
+                <TextInput initialValue={loadedChecklist ? loadedChecklist.title : ''} title='Title' setValue={setTitle} className="mb-2" />
+                <TextArea initialValue={loadedChecklist ? loadedChecklist.description : ''} title='description' setValue={setDescription} className="mb-2" />
+                <Toggle value={loadedChecklist ? loadedChecklist.private : false} title={`Private ${!userDoc.exists ? '(Must be logged in)' : ''}`} setValue={setIsPrivate} disabled={!userDoc.exists} />
                 {/* <TagsInput onTagsUpdate={setTags} /> */}
                 <Button stretch title="Save Checklist" className="hidden mt-4 md:block" onClick={saveChecklist} />
             </div>
@@ -122,7 +132,7 @@ export default function CreateChecklist() {
                 <Heading>Checklist Items</Heading>
                 <HR />
                 {checklist.items.length == 0 && <Text className="mb-2" small>No items have been added, click the button below to add the first.</Text>}
-                <Checklist items={checklist.items} disabled large />
+                <Checklist onDelete={onDeleteItem} items={checklist.items} disabled large />
                 <AddButton onClick={() => setItemFormModal(true)} />
                 <Button stretch title="Save Checklist" className="mt-4 md:hidden" onClick={saveChecklist} />
             </div>
