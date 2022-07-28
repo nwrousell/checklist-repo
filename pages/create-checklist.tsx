@@ -1,5 +1,5 @@
 import Heading from "../ui/Heading";
-import Text from "../ui/Text";
+import Text, { DangerText } from "../ui/Text";
 import TextInput from '../ui/TextInput'
 import TextArea from '../ui/Textarea'
 import Checkbox from '../ui/Checkbox'
@@ -20,6 +20,10 @@ import { addDoc, collection, updateDoc, doc, arrayUnion, getDoc, setDoc } from "
 import Overlay from "../ui/Overlay";
 import Spinner from '../ui/Spinner'
 import { ToastSuccess } from '../ui/Toasts'
+import { useRouter } from "next/router";
+import * as Filter from 'bad-words'
+
+const filter = new Filter()
 
 type PageState = 'creating' | 'starting' | 'loading' | 'editing' | 'adding_doc' | 'success'
 
@@ -27,6 +31,8 @@ export default function CreateChecklist() {
     const { db, userDoc, } = useContext(FirebaseContext)
     const [checklist, setTitle, setDescription, setTags, setIsPrivate, setItems] = useChecklist(userDoc.name)
     const [newItem, setNewItem] = useState<ChecklistItem>(null)
+    const router = useRouter()
+    const [profranity, setProfanity] = useState([])
 
     const [itemFormModal, setItemFormModal] = useState(false)
     const [state, setState] = useState<PageState>('starting')
@@ -57,7 +63,20 @@ export default function CreateChecklist() {
         }
 
         getChecklist()
-    }, [])
+    }, [userDoc])
+
+    useEffect(() => {
+        const temp = []
+        if(filter.isProfane(checklist.title)) temp.push('title')
+        if(filter.isProfane(checklist.description)) temp.push('description')
+        for(let index in checklist.items){
+            if(filter.isProfane(checklist.items[index].title) || filter.isProfane(checklist.items[index].subText)){
+                temp.push(`items`)
+            } 
+        }
+
+        setProfanity(temp)
+    }, [checklist])
 
     const addChecklistItem = (newItem: ChecklistItem) => {
         const temp = []
@@ -88,9 +107,11 @@ export default function CreateChecklist() {
                         createdChecklists: arrayUnion(newChecklistDocRef.id)
                     })
                 }
+                
                 break;
             case 'editing':
                 setState('adding_doc')
+                if(window.location.href.split("?").length == 1) return // TODO - this should be better
                 const checklistDocId = window.location.href.split("=")[1]
                 const checklistDocRef = doc(db, 'checklists', checklistDocId)
                 await setDoc(checklistDocRef, checklist, { merge: true })
@@ -105,6 +126,7 @@ export default function CreateChecklist() {
         setItems(temp)
     }
 
+
     if (state === 'loading' || state === 'starting') return (
         <div className="relative w-full h-full">
             <Overlay light />
@@ -114,6 +136,13 @@ export default function CreateChecklist() {
         </div>
     )
 
+    const handleSuccessToastDismiss = async () => {
+        if(!userDoc.exists) router.push("/")
+
+        await router.push(`/create-checklist?id=${userDoc.createdChecklists[userDoc.createdChecklists.length-1]}`)
+        router.reload()
+    }
+
     // TODO - figure out how state and re-renders work better (and understand useMemo, memo, and useCallback) 
     // * So I can figure out how to make the toggle load the value correctly (I'm probably not supposed to do it this way and that's why it's hard so find the right way)
 
@@ -122,19 +151,20 @@ export default function CreateChecklist() {
             <div>
                 <Heading>{state == 'editing' ? 'Edit' : 'Create'} Checklist</Heading>
                 <HR />
-                <TextInput initialValue={loadedChecklist ? loadedChecklist.title : ''} title='Title' setValue={setTitle} className="mb-2" />
-                <TextArea initialValue={loadedChecklist ? loadedChecklist.description : ''} title='description' setValue={setDescription} className="mb-2" />
+                <TextInput error={profranity.includes("title") && 'Please remove the profanity'} initialValue={loadedChecklist ? loadedChecklist.title : ''} title='Title' setValue={setTitle} className="mb-2" />
+                <TextArea error={profranity.includes('description') && 'Please remove the profanity'} initialValue={loadedChecklist ? loadedChecklist.description : ''} title='description' setValue={setDescription} className="mb-2" />
                 <Toggle value={loadedChecklist ? loadedChecklist.private : false} title={`Private ${!userDoc.exists ? '(Must be logged in)' : ''}`} setValue={setIsPrivate} disabled={!userDoc.exists} />
                 {/* <TagsInput onTagsUpdate={setTags} /> */}
-                <Button stretch title="Save Checklist" className="hidden mt-4 md:block" onClick={saveChecklist} />
+                <Button stretch disabled={profranity.length > 0} title="Save Checklist" className="hidden mt-4 md:block" onClick={saveChecklist} />
             </div>
             <div className="mt-8 md:mt-0">
                 <Heading>Checklist Items</Heading>
                 <HR />
                 {checklist.items.length == 0 && <Text className="mb-2" small>No items have been added, click the button below to add the first.</Text>}
                 <Checklist onDelete={onDeleteItem} items={checklist.items} disabled large />
+                { profranity.includes("items") && <DangerText>Please remove the profanity from the item(s).</DangerText> }
                 <AddButton onClick={() => setItemFormModal(true)} />
-                <Button stretch title="Save Checklist" className="mt-4 md:hidden" onClick={saveChecklist} />
+                <Button disabled={profranity.length > 0} stretch title="Save Checklist" className="mt-4 md:hidden" onClick={saveChecklist} />
             </div>
 
             {(state === 'adding_doc') &&
@@ -149,7 +179,7 @@ export default function CreateChecklist() {
                 <>
                     <Overlay light />
                     <div className="fixed inset-0 z-50 flex items-center justify-center">
-                        <ToastSuccess onClick={() => setState('editing')}>Checklist saved successfully</ToastSuccess>
+                        <ToastSuccess onClick={handleSuccessToastDismiss}>Checklist saved successfully</ToastSuccess>
                     </div>
                 </>
             }

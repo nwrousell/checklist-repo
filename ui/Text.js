@@ -16,9 +16,9 @@ export function WarningText({ small = false, children, className }) {
         <p className={`${small ? 'text-sm font-md' : 'text-md'} text-orange-700 ${className}`}>{children}</p>
     )
 }
-export function DangerText({ small = false, children, className }) {
+export function DangerText({ small = false, children, className="" }) {
     return (
-        <p className={`${small ? 'text-sm font-md' : 'text-md'} text-red-700 ${className}`}>{children}</p>
+        <p className={`${small ? 'text-sm font-md' : 'text-md'} text-red-500 ${className}`}>{children}</p>
     )
 }
 export function InfoText({ small = false, children, className }) {
