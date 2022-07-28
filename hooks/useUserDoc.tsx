@@ -8,7 +8,7 @@ export interface User {
     createdChecklists: string[];
     itemsCompleted: number;
     checklistCompletions: number;
-    exists: boolean;
+    exists?: boolean;
 }
 
 const blankUserDoc: User = {
@@ -47,6 +47,8 @@ function createUserDoc(userDocRef){
         favoritedChecklists: [],
         createdChecklists: [],
         name: '',
+        itemsCompleted: 0,
+        checklistCompletions: 0,
     }
     setDoc(userDocRef, userDoc)
 }
