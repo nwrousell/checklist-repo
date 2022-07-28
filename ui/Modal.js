@@ -1,7 +1,7 @@
 import Overlay from "./Overlay"
 import Button from "./Button"
 
-export default function Modal({ close, content, actionTitle, action }){
+export default function Modal({ close, content, actionTitle, danger=false, action }){
     return (
         <>
             <Overlay />
@@ -10,7 +10,7 @@ export default function Modal({ close, content, actionTitle, action }){
                 <hr className="my-4" />
                 <div className="flex justify-end">
                     <Button color="light" title="Close" onClick={close} className="mr-2" />
-                    {(action && actionTitle) && <Button title={actionTitle} onClick={action} />}
+                    {(action && actionTitle) && <Button color={danger ? 'red' : 'primary'} title={actionTitle} onClick={action} />}
                 </div>
             </div>
         </>

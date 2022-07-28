@@ -93,7 +93,7 @@ export default function CreateChecklist() {
                 setState('adding_doc')
                 const checklistDocId = window.location.href.split("=")[1]
                 const checklistDocRef = doc(db, 'checklists', checklistDocId)
-                await setDoc(checklistDocRef, checklist)
+                await setDoc(checklistDocRef, checklist, { merge: true })
         }
         setState('success')
     }
