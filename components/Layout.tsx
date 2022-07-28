@@ -50,12 +50,12 @@ export const LEFT_SIDEBAR_LINKS = [
 const PATHNAMES_EXCLUDED_FROM_LAYOUT = ['/login']
 
 const firebaseConfig = {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+    apiKey: "AIzaSyCe_5iHGNv7FB-8-TvFctmbut2E3Jt_S6s",
+    authDomain: "checklist-repo.firebaseapp.com",
+    projectId: "checklist-repo",
+    storageBucket: "checklist-repo.appspot.com",
+    messagingSenderId: "835904944595",
+    appId: "1:835904944595:web:1be99efaf6bc3d34c11726",
 }
 
 const app = initializeApp(firebaseConfig)
