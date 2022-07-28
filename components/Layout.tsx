@@ -68,6 +68,8 @@ const blankUserDoc: User = {
     createdChecklists: [],
     favoritedChecklists: [],
     exists: false,
+    checklistCompletions: 0,
+    itemsCompleted: 0,
 }
 export const FirebaseContext = createContext({ auth, db, userDoc: blankUserDoc })
 
