@@ -20,21 +20,12 @@ export default function useChecklist(author){
     const [isPrivate, setIsPrivate] = useState(false)
     const [items, setItems] = useState<ChecklistItem[]>([])
 
-    const addChecklistItem = (newItem: ChecklistItem) => {
-        const temp = []
-        for(let item of items) temp.push(item)
-
-        temp.push(newItem)
-        setItems(temp)
-    }
-
     useEffect(() => {
-        console.log(isPrivate)
         const temp: Checklist = {
             title, description, tags, private: isPrivate, items, author,
         }
         setChecklist(temp)
     }, [title, description, tags, isPrivate, items])
 
-    return [checklist, setTitle, setDescription, setTags, setIsPrivate, addChecklistItem] as const
+    return [checklist, setTitle, setDescription, setTags, setIsPrivate, setItems] as const
 }

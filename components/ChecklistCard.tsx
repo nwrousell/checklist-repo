@@ -20,7 +20,7 @@ export default function ChecklistCard({ title, description, items, isPrivate, ca
                     <Checklist disabled items={items} cutOff={3} />
                     <Text>...</Text>
                 </div>
-                <AiFillLock size={28} className="absolute top-0 right-0 p-1 bg-white shadow dark:bg-gray-700 text-primary-700" />
+                {isPrivate && <AiFillLock size={28} className="absolute top-0 right-0 p-1 bg-white shadow dark:bg-gray-700 text-primary-700" />}
             </div>
             <div className="p-4 bg-white dark:bg-gray-800">
                 <div className="flex justify-between">

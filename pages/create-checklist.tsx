@@ -16,7 +16,7 @@ import useChecklist from "../hooks/useChecklist";
 import { MdAdd } from "react-icons/md";
 
 import { FirebaseContext } from "../components/Layout";
-import { addDoc, collection, updateDoc, doc, arrayUnion, getDoc } from "firebase/firestore";
+import { addDoc, collection, updateDoc, doc, arrayUnion, getDoc, setDoc } from "firebase/firestore";
 import Overlay from "../ui/Overlay";
 import Spinner from '../ui/Spinner'
 import { ToastSuccess } from '../ui/Toasts'
@@ -25,12 +25,12 @@ type PageState = 'creating' | 'starting' | 'loading' | 'editing' | 'adding_doc' 
 
 export default function CreateChecklist() {
     const { db, userDoc, } = useContext(FirebaseContext)
-    const [checklist, setTitle, setDescription, setTags, setIsPrivate, addChecklistItem] = useChecklist(userDoc.name)
+    const [checklist, setTitle, setDescription, setTags, setIsPrivate, setItems] = useChecklist(userDoc.name)
     const [newItem, setNewItem] = useState<ChecklistItem>(null)
 
     const [itemFormModal, setItemFormModal] = useState(false)
     const [state, setState] = useState<PageState>('starting')
-    const [loadedChecklist, setLoadedChecklist] = useState(false)
+    const [loadedChecklist, setLoadedChecklist] = useState<Checklist>()
 
     useEffect(() => {
         if (window.location.href.split("?").length == 1) return
@@ -42,19 +42,27 @@ export default function CreateChecklist() {
 
             const snapshot = await getDoc(checklistDocRef)
             const { title, description, tags, private: isPrivate, items, } = snapshot.data()
+            setLoadedChecklist(snapshot.data() as Checklist)
 
             setTitle(title)
             setDescription(description)
             setTags(tags)
             setIsPrivate(isPrivate)
-            for (let item of items) addChecklistItem(item)
+            setItems(items)
 
-            setLoadedChecklist(true)
             setState('editing')
         }
 
         getChecklist()
     }, [])
+
+    const addChecklistItem = (newItem: ChecklistItem) => {
+        const temp = []
+        for(let item of checklist.items) temp.push(item)
+
+        temp.push(newItem)
+        setItems(temp)
+    }
 
     const handleModalAction = () => {
         setItemFormModal(false)
@@ -69,18 +77,20 @@ export default function CreateChecklist() {
         switch (state) {
             case 'creating':
                 setState('adding_doc')
-                const checklistDocRef = await addDoc(checklistCollectionRef, { ...checklist, favorites: 0 })
+                const newChecklistDocRef = await addDoc(checklistCollectionRef, { ...checklist, favorites: 0 })
 
                 if (userDoc.exists) {
                     const userDocRef = doc(db, 'users', userDoc.uid)
                     await updateDoc(userDocRef, {
-                        createdChecklists: arrayUnion(checklistDocRef.id)
+                        createdChecklists: arrayUnion(newChecklistDocRef.id)
                     })
                 }
                 break;
             case 'editing':
                 setState('adding_doc')
-                console.log("saving checklist")
+                const checklistDocId = window.location.href.split("=")[1]
+                const checklistDocRef = doc(db, 'checklists', checklistDocId)
+                await setDoc(checklistDocRef, checklist)
         }
         setState('success')
     }
@@ -102,9 +112,9 @@ export default function CreateChecklist() {
             <div>
                 <Heading>{state == 'editing' ? 'Edit' : 'Create'} Checklist</Heading>
                 <HR />
-                <TextInput initialValue={checklist.title} title='Title' setValue={setTitle} className="mb-2" />
-                <TextArea initialValue={checklist.description} title='description' setValue={setDescription} className="mb-2" />
-                <Toggle initialValue={checklist.private} title={`Private ${!userDoc.exists ? '(Must be logged in)' : ''}`} setValue={setIsPrivate} disabled={!userDoc.exists} />
+                <TextInput initialValue={loadedChecklist.title} title='Title' setValue={setTitle} className="mb-2" />
+                <TextArea initialValue={loadedChecklist.description} title='description' setValue={setDescription} className="mb-2" />
+                <Toggle value={loadedChecklist.private} title={`Private ${!userDoc.exists ? '(Must be logged in)' : ''}`} setValue={setIsPrivate} disabled={!userDoc.exists} />
                 {/* <TagsInput onTagsUpdate={setTags} /> */}
                 <Button stretch title="Save Checklist" className="hidden mt-4 md:block" onClick={saveChecklist} />
             </div>
