@@ -19,7 +19,11 @@ export default function Favorites(){
     const router = useRouter()
 
     useEffect(() => {
-        if(userDoc.favoritedChecklists.length === 0) return
+        if(userDoc.favoritedChecklists.length === 0){
+            setLoading(false)
+            return
+        }
+
         const checklistsCollectionRef = collection(db, 'checklists')
         const q = query(checklistsCollectionRef, where(documentId(), 'in', userDoc.favoritedChecklists), limit(CHECKLISTS_TO_LOAD))
 

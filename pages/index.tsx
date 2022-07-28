@@ -7,12 +7,14 @@ import { query, limit, collection, getDocs, updateDoc, doc, arrayUnion, arrayRem
 import ChecklistCard from '../components/ChecklistCard'
 
 import { FirebaseContext } from '../components/Layout'
+import { useRouter } from 'next/router'
 
 const CHECKLISTS_TO_LOAD = 3
 
 const Home: NextPage = () => {
     const { db, userDoc } = useContext(FirebaseContext)
     const [checklists, setChecklists] = useState<Checklist[]>([])
+    const router = useRouter()
 
     useEffect(() => {
             const checklistsCollectionRef = collection(db, 'checklists')
@@ -30,6 +32,11 @@ const Home: NextPage = () => {
     }, [])
 
     const onFavorite = (newValue: boolean, docId: string) => {
+        if(!userDoc.exists){
+            router.push("/login")
+            return
+        }
+
         const userDocRef = doc(db, 'users', userDoc.uid)
         const checklistDocRef = doc(db, 'checklists', docId)
 

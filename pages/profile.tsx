@@ -66,18 +66,9 @@ export default function Profile() {
             {userDoc.exists ? <Stats stats={getStats(userDoc)} /> :
                 <Text>You must be logged in to track stats. <span className="underline cursor-pointer hover:no-underline" onClick={() => router.push("/login")}>Login</span></Text>}
 
-            <Subheading className="mt-16">Account</Subheading>
-            <HR />
-            <div>
-                <div className="max-w-md mb-4">
-                    <TextInput title="Change name" initialValue={userDoc.name} setValue={setNewName} />
-                </div>
-                <Button title="Save" disabled={userDoc.name == newName} onClick={saveName} />
-                { nameChangeState === 'success' && <ToastSuccess onClick={() => setNameChangeState('idle')}>Name successfully changed.</ToastSuccess> }
-                { nameChangeState === 'error' && <ToastDanger onClick={() => setNameChangeState('idle')}>Something went wrong: <span className="italic">{ errorMessage }</span></ToastDanger> }
-            </div>
+            { userDoc.exists && <AccountSection userDoc={userDoc} setNewName={setNewName} newName={newName} saveName={saveName} nameChangeState={nameChangeState} setNameChangeState={setNameChangeState} errorMessage={errorMessage} />}
 
-            { nameChangeState === 'uploading' &&
+            {nameChangeState === 'uploading' &&
                 <>
                     <Overlay light />
                     <div className="absolute inset-0 z-50 flex items-center justify-center">
@@ -108,4 +99,16 @@ function getStats(userDoc: User) {
             number: userDoc.itemsCompleted || 0,
         },
     ]
+}
+function AccountSection({ setNewName, newName, saveName, userDoc, nameChangeState, setNameChangeState, errorMessage }) {
+    return (<><Subheading className="mt-16">Account</Subheading>
+        <HR />
+        <div>
+            <div className="max-w-md mb-4">
+                <TextInput title="Change name" initialValue={userDoc.name} setValue={setNewName} />
+            </div>
+            <Button title="Save" disabled={userDoc.name == newName} onClick={saveName} />
+            {nameChangeState === 'success' && <ToastSuccess onClick={() => setNameChangeState('idle')}>Name successfully changed.</ToastSuccess>}
+            {nameChangeState === 'error' && <ToastDanger onClick={() => setNameChangeState('idle')}>Something went wrong: <span className="italic">{errorMessage}</span></ToastDanger>}
+        </div></>);
 }

@@ -21,7 +21,10 @@ export default function MyChecklists() {
     const [checklistToDelete, setChecklistToDelete] = useState({ title: '', docId: '' })
 
     useEffect(() => {
-        if (userDoc.createdChecklists.length === 0) return
+        if (userDoc.createdChecklists.length === 0){
+            setLoading(false)
+            return
+        }
 
         const checklistsCollectionRef = collection(db, 'checklists')
         const q = query(checklistsCollectionRef, where(documentId(), 'in', userDoc.createdChecklists), limit(CHECKLISTS_TO_LOAD))
