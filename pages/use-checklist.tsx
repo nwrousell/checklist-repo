@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useReducer, useState } from "react"
 import Checklist from "../components/Checklist"
 import Heading from "../ui/Heading"
 import Text from "../ui/Text"
@@ -36,7 +36,7 @@ export default function UseChecklist({ }) {
         }
 
         getChecklist()
-    }, [])
+    }, [userDoc])
 
     if(error) return <div className="flex items-center justify-center h-full text-center"><Heading>{ error }</Heading></div>
     if(checklist === undefined) return <div className="flex items-center justify-center h-full"><Spinner /></div>
@@ -58,6 +58,8 @@ export default function UseChecklist({ }) {
 }
 
 function onItemCompleted(value: number, db: Firestore, userDoc: User){
+    if(!userDoc.exists) return
+
     const userDocRef = doc(db, 'users', userDoc.uid)
 
     updateDoc(userDocRef, {
@@ -66,6 +68,8 @@ function onItemCompleted(value: number, db: Firestore, userDoc: User){
 }
 
 function onChecklistCompleted(value: number, db: Firestore, userDoc: User){
+    if(!userDoc.exists) return
+    
     const userDocRef = doc(db, 'users', userDoc.uid)
 
     updateDoc(userDocRef, {

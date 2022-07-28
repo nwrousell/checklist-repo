@@ -23,6 +23,7 @@ export default function MyChecklists() {
     useEffect(() => {
         if (userDoc.createdChecklists.length === 0){
             setLoading(false)
+            setChecklists([])
             return
         }
 
@@ -39,7 +40,7 @@ export default function MyChecklists() {
         })
 
         return () => unsub()
-    }, [])
+    }, [userDoc])
 
     const onFavorite = (newValue: boolean, docId: string) => {
         const userDocRef = doc(db, 'users', userDoc.uid)
