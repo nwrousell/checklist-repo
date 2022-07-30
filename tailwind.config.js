@@ -17,8 +17,13 @@ module.exports = {
             },
             spacing: {
                 '0.75': '3px'
-            }
+            },
+            fontFamily: {
+            'sans': ['Open Sans', 'sans-serif'],
+            },
         },
     },
-    plugins: [],
+    plugins: [
+        require('tailwind-scrollbar-hide')
+    ],
 }

@@ -4,8 +4,8 @@ import { BiSun } from 'react-icons/bi';
 import { Search } from "./Search";
 import Avatar from './Avatar';
 
-export function TopBar({setDarkMode, darkMode, displayName, photoURL}) {
-    return <div className="px-8 py-4">
+export function TopBar({setDarkMode, darkMode, displayName, photoURL, className=""}) {
+    return <div className={`px-8 pt-4 ${className}`}>
         <div className="flex items-center justify-between h-14">
             <Search className="w-96" />
             <div className="flex items-center">

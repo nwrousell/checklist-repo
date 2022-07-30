@@ -16,7 +16,7 @@ import useChecklist from "../hooks/useChecklist";
 import { MdAdd } from "react-icons/md";
 
 import { FirebaseContext } from "../components/Layout";
-import { addDoc, collection, updateDoc, doc, arrayUnion, getDoc, setDoc } from "firebase/firestore";
+import { addDoc, collection, updateDoc, doc, arrayUnion, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import Overlay from "../ui/Overlay";
 import Spinner from '../ui/Spinner'
 import { ToastSuccess } from '../ui/Toasts'
@@ -99,7 +99,7 @@ export default function CreateChecklist() {
         switch (state) {
             case 'creating':
                 setState('adding_doc')
-                const newChecklistDocRef = await addDoc(checklistCollectionRef, { ...checklist, favorites: 0 })
+                const newChecklistDocRef = await addDoc(checklistCollectionRef, { ...checklist, favorites: 0, createdAt: Timestamp.now() })
 
                 if (userDoc.exists) {
                     const userDocRef = doc(db, 'users', userDoc.uid)
@@ -107,11 +107,12 @@ export default function CreateChecklist() {
                         createdChecklists: arrayUnion(newChecklistDocRef.id)
                     })
                 }
-                
+                router.push(`/create-checklist?id=${newChecklistDocRef.id}`)
                 break;
             case 'editing':
                 setState('adding_doc')
                 if(window.location.href.split("?").length == 1) return // TODO - this should be better
+
                 const checklistDocId = window.location.href.split("=")[1]
                 const checklistDocRef = doc(db, 'checklists', checklistDocId)
                 await setDoc(checklistDocRef, checklist, { merge: true })
@@ -126,7 +127,6 @@ export default function CreateChecklist() {
         setItems(temp)
     }
 
-
     if (state === 'loading' || state === 'starting') return (
         <div className="relative w-full h-full">
             <Overlay light />
@@ -135,13 +135,6 @@ export default function CreateChecklist() {
             </div>
         </div>
     )
-
-    const handleSuccessToastDismiss = async () => {
-        if(!userDoc.exists) router.push("/")
-
-        await router.push(`/create-checklist?id=${userDoc.createdChecklists[userDoc.createdChecklists.length-1]}`)
-        router.reload()
-    }
 
     // TODO - figure out how state and re-renders work better (and understand useMemo, memo, and useCallback) 
     // * So I can figure out how to make the toggle load the value correctly (I'm probably not supposed to do it this way and that's why it's hard so find the right way)
@@ -179,7 +172,7 @@ export default function CreateChecklist() {
                 <>
                     <Overlay light />
                     <div className="fixed inset-0 z-50 flex items-center justify-center">
-                        <ToastSuccess onClick={handleSuccessToastDismiss}>Checklist saved successfully</ToastSuccess>
+                        <ToastSuccess onClick={() => router.reload()}>Checklist saved successfully</ToastSuccess>
                     </div>
                 </>
             }

@@ -1,4 +1,4 @@
-import { DocumentReference } from 'firebase/firestore';
+import { DocumentReference, Timestamp } from 'firebase/firestore';
 import { useReducer, } from 'react'
 import { BiTrash } from 'react-icons/bi';
 import NumberedCheckbox from "../ui/NumberedCheckbox"
@@ -10,6 +10,7 @@ interface Checklist {
     private: boolean;
     tags: string[];
     items: ChecklistItem[];
+    createdAt: Timestamp;
     favorites?: Number;
     docId?: string;
 }

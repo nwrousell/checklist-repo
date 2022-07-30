@@ -17,33 +17,39 @@ import { MobileTopBar } from "./MobileTopBar";
 import { TopBar } from "./TopBar";
 import { LeftSidebar } from "./LeftSidebar";
 import useUserDoc from "../hooks/useUserDoc";
+import Spinner from "../ui/Spinner";
 import type { User } from '../hooks/useUserDoc'
 
-export const LEFT_SIDEBAR_LINKS = [
+const LEFT_SIDEBAR_LINKS = [
     {
         title: 'Browse',
         href: "/",
         Icon: RiFileList3Line,
+        accountOnly: false,
     },
     {
         title: 'Create Checklist',
         href: "/create-checklist",
         Icon: MdAdd,
+        accountOnly: false,
     },
     {
         title: 'Favorites',
         href: "/favorites",
         Icon: AiOutlineStar,
+        accountOnly: true,
     },
     {
         title: 'My Checklists',
         href: "/my-checklists",
         Icon: TbChecklist,
+        accountOnly: true,
     },
     {
         title: 'Profile',
         href: "/profile",
-        Icon: AiOutlineUser
+        Icon: AiOutlineUser,
+        accountOnly: false,
     }
 ]
 
@@ -74,7 +80,7 @@ const blankUserDoc: User = {
 export const FirebaseContext = createContext({ auth, db, userDoc: blankUserDoc })
 
 export default function Layout({ children }) {
-    const [darkMode, setDarkMode] = useDarkMode()
+    const [darkMode, loaded, setDarkMode] = useDarkMode()
     const [navOut, setNavOut] = useState(false)
     const router = useRouter()
     const [user, loading, error] = useAuthState(auth)
@@ -90,23 +96,25 @@ export default function Layout({ children }) {
         )
     }
 
+    const sidebarLinks = userDoc.exists ? LEFT_SIDEBAR_LINKS : LEFT_SIDEBAR_LINKS.filter(({accountOnly}) => !accountOnly)
+
     return (
         <FirebaseContext.Provider value={{ auth, db, userDoc }}>
-            <div className={`min-h-screen ${darkMode && 'dark bg-gray-800'}`}>
+            <div className={`h-max min-h-screen relative ${darkMode && 'dark bg-gray-800'}`}>
                 <div className="hidden md:flex">
-                    <LeftSidebar userLoggedIn={user} router={router} links={LEFT_SIDEBAR_LINKS} />
-                    <div className="flex flex-col w-full">
-                        <TopBar darkMode={darkMode} setDarkMode={setDarkMode} displayName={user && user.displayName} photoURL={user && user.photoURL} />
+                    <LeftSidebar className="sticky top-0" userLoggedIn={user} router={router} links={sidebarLinks} />
+                    <div className="relative flex flex-col w-full">
+                        <TopBar className={`sticky top-0 z-10 ${darkMode ? 'bg-gray-800' : 'bg-white'}`} darkMode={darkMode} setDarkMode={setDarkMode} displayName={user && user.displayName} photoURL={user && user.photoURL} />
                         <div className="h-full px-8 pb-8">
-                            {children}
+                            { children }
                         </div>
                     </div>
                 </div>
                 <div className="h-full md:hidden">
                     <MobileTopBar setDarkMode={setDarkMode} darkMode={darkMode} setNavOut={setNavOut} navOut={navOut} />
-                    {MobileDropDownNav(navOut, router, !!user)}
+                    {MobileDropDownNav(navOut, router, !!user, sidebarLinks)}
                     <div className="h-full p-4">
-                        {children}
+                        { children }
                     </div>
                 </div>
             </div>

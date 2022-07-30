@@ -5,8 +5,8 @@ import { LogoutButton } from './LogoutButton';
 import Button from '../ui/Button';
 import { useRouter } from 'next/router';
 
-export function LeftSidebar({ router, links, userLoggedIn }) {
-    return <div className="flex flex-col justify-between h-screen p-4 border-r border-gray-200 dark:border-gray-700 w-80">
+export function LeftSidebar({ router, links, userLoggedIn, className="" }) {
+    return <div className={`flex flex-col justify-between h-screen p-4 border-r border-gray-200 dark:border-gray-700 w-80 ${className}`}>
         <div>
             <div className="flex items-center h-14">
                 <Logo />
