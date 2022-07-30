@@ -16,7 +16,7 @@ export default function useChecklist(author){
 
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
-    const [tags, setTags] = useState<string[]>(null)
+    const [tags, setTags] = useState<string[]>([])
     const [isPrivate, setIsPrivate] = useState(false)
     const [items, setItems] = useState<ChecklistItem[]>([])
 

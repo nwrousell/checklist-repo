@@ -4,6 +4,7 @@ import Badge from '../ui/Badge'
 import Text from "../ui/Text";
 import { useState } from "react";
 
+
 export default function TagsInput({ onTagsUpdate }){
     const [newTagTitle, setNewTagTitle] = useState(false)
     const [tags, setTags] = useState([])
