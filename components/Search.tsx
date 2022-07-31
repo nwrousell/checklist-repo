@@ -1,14 +1,78 @@
-export function Search({ className = "" }) {
+import Select from 'react-select'
+import { useContext, useState } from 'react'
+import { useRouter } from 'next/router'
+import useTags from "../hooks/useTags";
+
+import { FirebaseContext, DarkModeContext } from './Layout';
+import { BiSearch } from 'react-icons/bi';
+
+const MAX_TAGS = 3
+
+export default function Search({ }) {
+    const { db } = useContext(FirebaseContext)
+    const { darkMode } = useContext(DarkModeContext)
+    const [selectedTag, setSelectedTag] = useState([])
+    const router = useRouter()
+    const tags = useTags(db)
+
+    const handleTagChange = (value) => {
+        const temp = value.value.replace(" ", '-')
+        // for(let tag of values) temp.push(tag.value.replace(' ', '-'))
+        setSelectedTag(temp)
+    }
+
+    const handleSearch = async () => {
+        // const url = `/?tags=${selectedTag.join('+')}`
+        if(selectedTag.length == 0) return
+        const url = `/?tag=${selectedTag}`
+        await router.push(url)
+        router.reload()
+    }
+
+    const selectCustomStyles = {
+        container: (provided, state) => ({
+            width: 400,
+        }),
+        singleValue: (provided, state) => ({
+            ...provided,
+            color: darkMode ? '#e5e7eb !important' : '#374151 !important',
+        }),
+        control: (provided, state) => ({
+            ...provided,
+            backgroundColor: darkMode ? '#1f2937' : 'white',
+            borderWidth: 2,
+            borderRadius: state.isFocused ? '0.25rem 0.25rem 0 0' : '0.25rem',
+            outline: 'none',
+            boxShadow: 'none',
+            borderColor: state.isFocused ? '#15803d !important' : darkMode ? '#374151 !important' : '#d1d5db !important',
+          }),
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: state.isFocused ? '#dcfce7' : darkMode ? '#1f2937' : 'white',
+            color: state.isFocused ? 'black' : darkMode ? '#e5e7eb' : 'black'
+        }),
+        menu: (provided, state) => ({
+            position: 'absolute',
+            width: '100%',
+            maxWidth: 400,
+            border: '2px solid #d1d5db',
+            borderTop: 'none',
+            borderRadius: '0 0 0.25rem 0.25rem',
+            backgroundColor: darkMode ? '#1f2937' : 'white',
+        }),
+        dropdownIndicator: (provided, state) => ({
+            color: darkMode ? '#374151 !important' : '#d1d5db !important',
+            marginRight: '0.5em'
+        }),
+        indicatorSeparator: (provided, state) => ({
+            display: 'none'
+        })
+    }
+
     return (
-        <form>
-            {/* <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Search</label> */}
-            <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <svg aria-hidden="true" className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </div>
-                <input type="search" id="default-search" className={`block w-full p-3 pl-10 text-sm text-gray-900 bg-gray-100 rounded-lg outline-none dark:placeholder-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 ${className}`} placeholder="Search..." required />
-                {/* <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button> */}
-            </div>
-        </form>
-    );
+        <div className="flex items-center">
+            <Select onChange={handleTagChange} placeholder='Search' styles={selectCustomStyles} options={tags} />
+            <BiSearch size={28} onClick={handleSearch} className="ml-2 text-gray-500 cursor-pointer hover:text-gray-600 dark:hover:text-gray-400" />
+        </div>
+    )
 }

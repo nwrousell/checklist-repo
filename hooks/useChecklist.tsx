@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import Checklist, { ChecklistItem } from "../components/Checklist"
 
@@ -8,7 +9,7 @@ const BASE_CHECKLIST: Checklist = {
     private: false,
     items: [],
     author: '',
-    favorites: 0
+    favorites: 0,
 }
 
 export default function useChecklist(author){
@@ -22,7 +23,7 @@ export default function useChecklist(author){
 
     useEffect(() => {
         const temp: Checklist = {
-            title, description, tags, private: isPrivate, items, author,
+            title, description, tags, private: isPrivate, items, author, 
         }
         setChecklist(temp)
     }, [title, description, tags, isPrivate, items])

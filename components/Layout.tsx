@@ -78,6 +78,7 @@ const blankUserDoc: User = {
     itemsCompleted: 0,
 }
 export const FirebaseContext = createContext({ auth, db, userDoc: blankUserDoc })
+export const DarkModeContext = createContext({ darkMode: false })
 
 export default function Layout({ children }) {
     const [darkMode, loaded, setDarkMode] = useDarkMode()
@@ -100,24 +101,26 @@ export default function Layout({ children }) {
 
     return (
         <FirebaseContext.Provider value={{ auth, db, userDoc }}>
-            <div className={`h-max min-h-screen relative ${darkMode && 'dark bg-gray-800'}`}>
-                <div className="hidden md:flex">
-                    <LeftSidebar className="sticky top-0" userLoggedIn={user} router={router} links={sidebarLinks} />
-                    <div className="relative flex flex-col w-full">
-                        <TopBar className={`sticky top-0 z-10 ${darkMode ? 'bg-gray-800' : 'bg-white'}`} darkMode={darkMode} setDarkMode={setDarkMode} displayName={user && user.displayName} photoURL={user && user.photoURL} />
-                        <div className="h-full px-8 pb-8">
+            <DarkModeContext.Provider value={{ darkMode }}>
+                <div className={`h-max min-h-screen relative ${darkMode && 'dark bg-gray-800'}`}>
+                    <div className="hidden md:flex">
+                        <LeftSidebar className="sticky top-0" userLoggedIn={user} router={router} links={sidebarLinks} />
+                        <div className="relative flex flex-col w-full">
+                            <TopBar className={`sticky top-0 z-10 ${darkMode ? 'bg-gray-800' : 'bg-white'}`} darkMode={darkMode} setDarkMode={setDarkMode} displayName={user && user.displayName} photoURL={user && user.photoURL} />
+                            <div className="h-full px-8 pb-8">
+                                { children }
+                            </div>
+                        </div>
+                    </div>
+                    <div className="h-full md:hidden">
+                        <MobileTopBar setDarkMode={setDarkMode} darkMode={darkMode} setNavOut={setNavOut} navOut={navOut} />
+                        {MobileDropDownNav(navOut, router, !!user, sidebarLinks)}
+                        <div className="h-full p-4">
                             { children }
                         </div>
                     </div>
                 </div>
-                <div className="h-full md:hidden">
-                    <MobileTopBar setDarkMode={setDarkMode} darkMode={darkMode} setNavOut={setNavOut} navOut={navOut} />
-                    {MobileDropDownNav(navOut, router, !!user, sidebarLinks)}
-                    <div className="h-full p-4">
-                        { children }
-                    </div>
-                </div>
-            </div>
+            </DarkModeContext.Provider>
         </FirebaseContext.Provider>
     )
 }

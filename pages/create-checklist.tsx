@@ -25,6 +25,8 @@ import { useRouter } from "next/router";
 import * as Filter from 'bad-words'
 import Select from 'react-select'
 import Creatable from 'react-select/creatable'
+import useTags, { transformTagList } from "../hooks/useTags";
+
 
 const filter = new Filter()
 
@@ -33,21 +35,30 @@ const selectCustomStyles = {
         ...provided,
         border: '2px solid #d1d5db',
         borderWidth: 2,
+        borderRadius: state.isFocused ? '0.25rem 0.25rem 0 0' : '0.25rem',
         outline: 'none',
         boxShadow: 'none',
         borderColor: state.isFocused ? '#15803d !important' : '#d1d5db !important',
       }),
     option: (provided, state) => ({
         ...provided,
-        // backgroundColor: '#15803d'
-    })
+        backgroundColor: state.isFocused ? '#dcfce7' : 'white'
+    }),
+    menu: (provided, state) => ({
+        border: '2px solid #d1d5db',
+        borderTop: 'none',
+        borderRadius: '0 0 0.25rem 0.25rem',
+        backgroundColor: 'white',
+        padding: 0,
+        margin: 0,
+    }),
 }
 
 type PageState = 'creating' | 'starting' | 'loading' | 'editing' | 'adding_doc' | 'success'
 
 export default function CreateChecklist() {
     const { db, userDoc, } = useContext(FirebaseContext)
-    const [tagDocData, loading, error, snapshot] = useDocumentData(doc(db, 'misc', 'tags'));
+    const tagsList = useTags(db)
     const [checklist, setTitle, setDescription, setTags, setIsPrivate, setItems] = useChecklist(userDoc.name)
     const [newItem, setNewItem] = useState<ChecklistItem>(null)
     const router = useRouter()
@@ -57,7 +68,6 @@ export default function CreateChecklist() {
     const [state, setState] = useState<PageState>('starting')
     const [loadedChecklist, setLoadedChecklist] = useState<Checklist>()
 
-    const tags_list = loading ? [] : transformTagList(tagDocData.tags)
 
     useEffect(() => {
         if (window.location.href.split("?").length == 1) {
@@ -168,7 +178,19 @@ export default function CreateChecklist() {
 
     const handleTagChange = (newValue: any[]) => {
         let temp = newValue.map(({ value }) => value)
+        if(temp === null) temp = []
         setTags(temp)
+    }
+
+    const isValidNewTag = (inputValue) => {
+        return (
+            !inputValue.includes('+') && 
+            !inputValue.includes('?') && 
+            !inputValue.includes('=') && 
+            !inputValue.includes('-') &&
+            inputValue.length > 0 &&
+            !filter.isProfane(inputValue)
+        )
     }
 
     // TODO - figure out how state and re-renders work better (and understand useMemo, memo, and useCallback) 
@@ -183,7 +205,7 @@ export default function CreateChecklist() {
                 <TextArea error={profranity.includes('description') && 'Please remove the profanity'} initialValue={loadedChecklist ? loadedChecklist.description : ''} title='description' setValue={setDescription} className="mb-2" />
                 <Toggle value={loadedChecklist ? loadedChecklist.private : false} title={`Private ${!userDoc.exists ? '(Must be logged in)' : ''}`} setValue={setIsPrivate} disabled={!userDoc.exists} />
                 {/* <TagsInput onTagsUpdate={setTags} /> */}
-                <Creatable onChange={handleTagChange} defaultValue={(loadedChecklist && loadedChecklist.tags) ? transformTagList(loadedChecklist.tags) : []} styles={selectCustomStyles} onCreateOption={createTag} options={tags_list} isMulti />
+                <Creatable isValidNewOption={isValidNewTag} onChange={handleTagChange} defaultValue={(loadedChecklist && loadedChecklist.tags) ? transformTagList(loadedChecklist.tags) : []} styles={selectCustomStyles} onCreateOption={createTag} options={tagsList} isMulti />
                 {/* <Select styles={selectCustomStyles} onChange={(newValue) => console.log(newValue)} options={tags_list} isMulti /> */}
                 <Button stretch disabled={profranity.length > 0} title="Save Checklist" className="hidden mt-4 md:block" onClick={saveChecklist} />
             </div>
@@ -244,9 +266,4 @@ function AddButton({ onClick }) {
             <Text className="font-semibold">Add Item</Text>
         </div>
     )
-}
-function transformTagList(tags){
-    const temp = []
-    for(let tag of tags) temp.push({ value: tag, label: tag })
-    return temp
 }

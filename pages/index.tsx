@@ -1,16 +1,22 @@
 import type { NextPage } from 'next'
-import { useContext, } from 'react'
-
-
-
+import { useContext, useEffect, useState } from 'react'
 import { FirebaseContext } from '../components/Layout'
 import ChecklistLoader from '../components/ChecklistLoader'
 
 const Home: NextPage = () => {
     const { db, userDoc } = useContext(FirebaseContext)
+    const [filterTag, setFilterTag] = useState('')
+
+    useEffect(() => {
+        if(window.location.href.split("?").length == 1) return
+
+        const tag = window.location.href.split("=")[1].split("+")[0].replace('-', ' ')
+        
+        setFilterTag(tag)
+    }, [])
 
     return (
-        <ChecklistLoader db={db} userDoc={userDoc} state='browse' />
+        <ChecklistLoader db={db} userDoc={userDoc} filterTag={filterTag} state={filterTag!=='' ? 'filter' : 'browse'} />
     )
 }
 

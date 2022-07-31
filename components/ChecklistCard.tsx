@@ -10,6 +10,7 @@ import { AiFillHeart, AiOutlineHeart, AiFillLock } from 'react-icons/ai'
 import { FiEdit2 } from 'react-icons/fi'
 import { useRouter } from "next/router"
 import { BiTrash } from "react-icons/bi"
+import Badge from "../ui/Badge"
 
 export default function ChecklistCard({ title, description, items, isPrivate, onDelete = null, canEdit = false, favorites, favoritedByUser, onFavorite, tags, docId = "", author }) {
     const router = useRouter()
@@ -24,6 +25,11 @@ export default function ChecklistCard({ title, description, items, isPrivate, on
                 {isPrivate && <AiFillLock size={28} className="absolute top-0 right-0 p-1 bg-white shadow dark:bg-gray-700 text-primary-700" />}
             </div>
             <div className="p-4 bg-white dark:bg-gray-800">
+                {
+                    tags.length > 0 && (<div className="flex py-2">
+                        {tags.map((title, i) => <Badge key={i} title={title} className="mr-1" />)}
+                    </div>)
+                }
                 <div className="flex justify-between">
                     <Subheading className="select-none">{title}</Subheading>
                     <div className="flex items-center mb-2 cursor-pointer" onClick={() => onFavorite(!favoritedByUser, docId)}>

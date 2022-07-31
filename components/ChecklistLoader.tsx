@@ -11,9 +11,9 @@ import Text from "../ui/Text"
 
 const CHECKLISTS_TO_LOAD = 6
 
-type LoadingState = 'browse' | 'user-created' | 'favorites'
+type LoadingState = 'browse' | 'user-created' | 'favorites' | 'filter'
 
-export default function ChecklistLoader({ db, userDoc, state="browse", onDelete=null }) {
+export default function ChecklistLoader({ db, userDoc, state="browse", onDelete=null, filterTag='' }) {
     const [checklists, setChecklists] = useState([])
     const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot>()
     const [moreChecklists, setMoreChecklists] = useState(false)
@@ -57,6 +57,10 @@ export default function ChecklistLoader({ db, userDoc, state="browse", onDelete=
 
         let q
         switch(state){
+            case 'filter':
+                console.log(`RAN: ${filterTag}`)
+                q = query(checklistsCollectionRef, where('private', '==', false), where('tags', 'array-contains', filterTag), orderBy("createdAt"), startAfter(lastVisible || 0), limit(CHECKLISTS_TO_LOAD))
+                break;
             case 'browse':
                 q = query(checklistsCollectionRef, where('private', '==', false), orderBy("createdAt"), startAfter(lastVisible || 0), limit(CHECKLISTS_TO_LOAD))
                 break;
@@ -85,10 +89,10 @@ export default function ChecklistLoader({ db, userDoc, state="browse", onDelete=
         else setMoreChecklists(true)
     }
 
-    useEffect(() => { getNextBatch(true) }, [])
+    useEffect(() => { getNextBatch(true) }, [state])
 
     return (
-        <div id="container-ref" className="relative min-h-full p-4 pb-32 overflow-scroll scrollbar-hide md:p-8 bg-gray-50 dark:bg-gray-700">
+        <div id="container-ref" className="relative min-h-full p-4 pb-32 overflow-scroll scrollbar-hide md:pb-32 md:p-8 bg-gray-50 dark:bg-gray-700">
             <InfiniteScroll
                 dataLength={checklists.length} //This is important field to render the next data
                 next={getNextBatch}
@@ -100,7 +104,7 @@ export default function ChecklistLoader({ db, userDoc, state="browse", onDelete=
                 }
                 className="grid h-full grid-cols-1 gap-4 lg:gap-8 md:grid-cols-2 lg:grid-cols-3"
             >
-                {checklists.map((props: Checklist, i) => <ChecklistCard onDelete={onDelete} canEdit={state==='user-created'} isPrivate={false} favorites={props.favorites} onFavorite={onFavorite} favoritedByUser={userDoc.favoritedChecklists.includes(props.docId)} {...props} key={i} />)}
+                {checklists.map((props: Checklist, i) => <ChecklistCard onDelete={onDelete} canEdit={state==='user-created'} isPrivate={props.private} favorites={props.favorites} onFavorite={onFavorite} favoritedByUser={userDoc.favoritedChecklists.includes(props.docId)} {...props} key={i} />)}
                 {(checklists.length === 0 && state==='user-created') && <Text className="absolute transform -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2">You haven't created any checklists yet. <span className="underline cursor-pointer hover:no-underline" onClick={() => router.push("/create-checklist")}>Create your first.</span></Text>}
                 {(checklists.length === 0 && state==='favorites') && <Text className="absolute transform -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2">You haven't favorited any checklists yet. <span className="underline cursor-pointer hover:no-underline" onClick={() => router.push("/")}>Browse.</span></Text>}
             </InfiniteScroll>

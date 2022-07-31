@@ -10,7 +10,7 @@ interface Checklist {
     private: boolean;
     tags: string[];
     items: ChecklistItem[];
-    createdAt: Timestamp;
+    createdAt?: Timestamp;
     favorites?: Number;
     docId?: string;
 }
