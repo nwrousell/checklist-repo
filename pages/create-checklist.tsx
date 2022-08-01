@@ -2,11 +2,11 @@ import Heading from "../ui/Heading";
 import Text, { DangerText } from "../ui/Text";
 import TextInput from '../ui/TextInput'
 import TextArea from '../ui/Textarea'
-import Checkbox from '../ui/Checkbox'
-import TagsInput from "../components/TagsInput";
-import Modal from '../ui/Modal'
 
-import { useEffect, useState, useContext, memo, useMemo } from "react";
+import Modal from '../ui/Modal'
+import Head from "next/head";
+
+import { useEffect, useState, useContext } from "react";
 
 import Button from "../ui/Button";
 import HR from "../ui/HR";
@@ -23,7 +23,6 @@ import Spinner from '../ui/Spinner'
 import { ToastSuccess } from '../ui/Toasts'
 import { useRouter } from "next/router";
 import * as Filter from 'bad-words'
-import Select from 'react-select'
 import Creatable from 'react-select/creatable'
 import useTags, { transformTagList } from "../hooks/useTags";
 
@@ -178,7 +177,7 @@ export default function CreateChecklist() {
 
     const handleTagChange = (newValue: any[]) => {
         let temp = newValue.map(({ value }) => value)
-        if(temp === null) temp = []
+        if(temp == null) temp = []
         setTags(temp)
     }
 
@@ -198,6 +197,9 @@ export default function CreateChecklist() {
 
     return (
         <div className="relative h-full md:grid md:grid-cols-2 md:gap-8">
+            <Head>
+                <title>Checklist Repo - Create Checklist</title>
+            </Head>
             <div>
                 <Heading>{state == 'editing' ? 'Edit' : 'Create'} Checklist</Heading>
                 <HR />

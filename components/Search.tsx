@@ -5,6 +5,7 @@ import useTags from "../hooks/useTags";
 
 import { FirebaseContext, DarkModeContext } from './Layout';
 import { BiSearch } from 'react-icons/bi';
+import { StylesConfig } from 'react-select';
 
 const MAX_TAGS = 3
 
@@ -54,9 +55,9 @@ export default function Search({ }) {
         menu: (provided, state) => ({
             position: 'absolute',
             width: '100%',
-            maxWidth: 400,
+            maxWidth: '400px',
             border: '2px solid #d1d5db',
-            borderTop: 'none',
+            borderTop: '0',
             borderRadius: '0 0 0.25rem 0.25rem',
             backgroundColor: darkMode ? '#1f2937' : 'white',
         }),
@@ -71,7 +72,7 @@ export default function Search({ }) {
 
     return (
         <div className="flex items-center">
-            <Select onChange={handleTagChange} placeholder='Search' styles={selectCustomStyles} options={tags} />
+            <Select onChange={handleTagChange} placeholder='Search' styles={selectCustomStyles as StylesConfig<any, false, any>} options={tags} />
             <BiSearch size={28} onClick={handleSearch} className="ml-2 text-gray-500 cursor-pointer hover:text-gray-600 dark:hover:text-gray-400" />
         </div>
     )

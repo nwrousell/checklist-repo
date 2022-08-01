@@ -2,6 +2,7 @@ import type { NextPage } from 'next'
 import { useContext, useEffect, useState } from 'react'
 import { FirebaseContext } from '../components/Layout'
 import ChecklistLoader from '../components/ChecklistLoader'
+import Head from 'next/head'
 
 const Home: NextPage = () => {
     const { db, userDoc } = useContext(FirebaseContext)
@@ -16,7 +17,12 @@ const Home: NextPage = () => {
     }, [])
 
     return (
-        <ChecklistLoader db={db} userDoc={userDoc} filterTag={filterTag} state={filterTag!=='' ? 'filter' : 'browse'} />
+        <>
+            <Head>
+                <title>Checklist Repo - Browse Checklists</title>
+            </Head>
+            <ChecklistLoader db={db} userDoc={userDoc} filterTag={filterTag} state={filterTag!=='' ? 'filter' : 'browse'} />
+        </>
     )
 }
 

@@ -5,6 +5,7 @@ import Text from "../ui/Text"
 import HR from "../ui/HR"
 import Spinner from "../ui/Spinner"
 import Badge from "../ui/Badge"
+import Head from "next/head"
 
 import { AiFillHeart } from 'react-icons/ai'
 
@@ -44,6 +45,9 @@ export default function UseChecklist({ }) {
 
     return (
         <div className="h-full">
+            <Head>
+                <title>Checklist Repo - {checklist.title}</title>
+            </Head>
             {
                 checklist.tags.length > 0 && (<div className="flex py-2">
                     {checklist.tags.map((title, i) => <Badge key={i} title={title} className="mr-1" />)}

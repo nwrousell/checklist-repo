@@ -1,7 +1,5 @@
-import Search from '../ui/Search'
-
 import { BsThreeDots, BsFillMoonFill } from 'react-icons/bs'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 
 const LINKS = [

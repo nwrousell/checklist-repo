@@ -14,6 +14,7 @@ import { FirebaseError } from "firebase/app";
 import { ToastDanger, ToastSuccess } from "../ui/Toasts";
 import Overlay from "../ui/Overlay";
 import Spinner from "../ui/Spinner";
+import Head from "next/head";
 
 const DUMMY_STATS = [
     {
@@ -59,6 +60,9 @@ export default function Profile() {
 
     return (
         <div className="relative h-full">
+            <Head>
+                <title>Checklist Repo - Profile</title>
+            </Head>
             <Heading big className="mb-8">Profile</Heading>
 
             <Subheading>Stats</Subheading>
