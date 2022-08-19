@@ -21,7 +21,7 @@ export function LeftSidebar({ router, links, userLoggedIn, className="" }) {
             <div>
                 {
                     userLoggedIn ? <LogoutButton /> :
-                        <Button stretch onClick={() => router.push("/login")} title="Log in" />
+                        <div><Button stretch onClick={() => router.push("/login")} title="Log in" /></div>
                 }
             </div>
         </div>

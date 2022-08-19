@@ -87,6 +87,9 @@ export default function Layout({ children }) {
     const [user, loading, error] = useAuthState(auth)
     const userDoc = useUserDoc(user, db)
 
+    // Close mobile nav when you click to a new screen (it's annoying if it stays open)
+    useEffect(() => setNavOut(false), [router.pathname])
+
     if (PATHNAMES_EXCLUDED_FROM_LAYOUT.includes(router.pathname)) {
         return (
             <FirebaseContext.Provider value={{ auth, db, userDoc }}>

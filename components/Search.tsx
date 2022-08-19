@@ -72,7 +72,7 @@ export default function Search({ }) {
 
     return (
         <div className="flex items-center">
-            <Select onChange={handleTagChange} placeholder='Search' styles={selectCustomStyles as StylesConfig<any, false, any>} options={tags} />
+            <Select instanceId={"my-select"} onChange={handleTagChange} placeholder='Search' styles={selectCustomStyles as StylesConfig<any, false, any>} options={tags} />
             <BiSearch size={28} onClick={handleSearch} className="ml-2 text-gray-500 cursor-pointer hover:text-gray-600 dark:hover:text-gray-400" />
         </div>
     )
