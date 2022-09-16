@@ -11,6 +11,7 @@ import { FiEdit2 } from 'react-icons/fi'
 import { useRouter } from "next/router"
 import { BiTrash } from "react-icons/bi"
 import Badge from "../ui/Badge"
+import { truncate } from "../helpers/string-functions"
 
 export default function ChecklistCard({ title, description, items, isPrivate, onDelete = null, canEdit = false, favorites, favoritedByUser, onFavorite, tags, docId = "", author }) {
     const router = useRouter()
@@ -31,7 +32,7 @@ export default function ChecklistCard({ title, description, items, isPrivate, on
                     </div>)
                 }
                 <div className="flex justify-between">
-                    <Subheading className="select-none">{title}</Subheading>
+                    <Subheading className="select-none">{truncate(title, 30)}</Subheading>
                     <div className="flex items-center mb-2 cursor-pointer" onClick={() => onFavorite(!favoritedByUser, docId)}>
                         <Text className="font-semibold select-none">{favorites}</Text>
                         {favoritedByUser ? <AiFillHeart size={18} className="ml-1 text-red-500" /> :
@@ -39,7 +40,7 @@ export default function ChecklistCard({ title, description, items, isPrivate, on
                         }
                     </div>
                 </div>
-                <Text small className="mb-4 select-none">{description}</Text>
+                <Text small className="mb-4 select-none">{truncate(description, 100)}</Text>
                 <div className="flex items-center justify-between">
                     <Button small title="Check it out" onClick={() => router.push(`/use-checklist?id=${docId}`)} />
                     <div className="flex items-center">

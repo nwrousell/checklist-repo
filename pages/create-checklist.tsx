@@ -15,7 +15,7 @@ import Toggle from "../ui/Toggle";
 import useChecklist from "../hooks/useChecklist";
 import { MdAdd } from "react-icons/md";
 
-import { FirebaseContext } from "../components/Layout";
+import { FirebaseContext, DarkModeContext } from "../components/Layout";
 import { addDoc, collection, updateDoc, doc, arrayUnion, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import { useDocumentData } from 'react-firebase-hooks/firestore'
 import Overlay from "../ui/Overlay";
@@ -29,28 +29,33 @@ import useTags, { transformTagList } from "../hooks/useTags";
 
 const filter = new Filter()
 
-const selectCustomStyles = {
-    control: (provided, state) => ({
-        ...provided,
-        border: '2px solid #d1d5db',
-        borderWidth: 2,
-        borderRadius: state.isFocused ? '0.25rem 0.25rem 0 0' : '0.25rem',
-        outline: 'none',
-        boxShadow: 'none',
-        borderColor: state.isFocused ? '#15803d !important' : '#d1d5db !important',
-      }),
-    option: (provided, state) => ({
-        ...provided,
-        backgroundColor: state.isFocused ? '#dcfce7' : 'white'
-    }),
-    menu: (provided, state) => ({
-        border: '2px solid #d1d5db',
-        borderTop: 'none',
-        borderRadius: '0 0 0.25rem 0.25rem',
-        backgroundColor: 'white',
-        padding: 0,
-        margin: 0,
-    }),
+function createCustomSelectStyles(darkMode) {
+    return {
+        control: (provided, state) => ({
+            ...provided,
+            backgroundColor: darkMode ? '#1f2937' : 'white',
+            border: '2px solid #d1d5db',
+            borderWidth: 2,
+            borderRadius: state.isFocused ? '0.25rem 0.25rem 0 0' : '0.25rem',
+            outline: 'none',
+            boxShadow: 'none',
+            borderColor: state.isFocused ? '#15803d !important' : darkMode ? '#374151 !important' : '#d1d5db !important',
+        }),
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: state.isFocused ? '#22c55e' : darkMode ? '#1f2937' : 'white',
+            color: state.isFocused ? 'black' : darkMode ? '#e5e7eb' : 'black'
+        }),
+        menu: (provided, state) => ({
+            borderWidth: 2,
+            borderColor: darkMode ? 'green' : '#eee',
+            borderTop: 'none',
+            borderRadius: '0 0 0.25rem 0.25rem',
+            backgroundColor: darkMode ? '#1f2937' : 'white',
+            padding: 0,
+            margin: 0,
+        }),
+    }
 }
 
 type PageState = 'creating' | 'starting' | 'loading' | 'editing' | 'adding_doc' | 'success'
@@ -62,11 +67,13 @@ export default function CreateChecklist() {
     const [newItem, setNewItem] = useState<ChecklistItem>(null)
     const router = useRouter()
     const [profranity, setProfanity] = useState([])
+    const { darkMode } = useContext(DarkModeContext)
 
     const [itemFormModal, setItemFormModal] = useState(false)
     const [state, setState] = useState<PageState>('starting')
     const [loadedChecklist, setLoadedChecklist] = useState<Checklist>()
 
+    const selectCustomStyles = createCustomSelectStyles(darkMode)
 
     useEffect(() => {
         if (window.location.href.split("?").length == 1) {
@@ -97,12 +104,12 @@ export default function CreateChecklist() {
 
     useEffect(() => {
         const temp = []
-        if(filter.isProfane(checklist.title)) temp.push('title')
-        if(filter.isProfane(checklist.description)) temp.push('description')
-        for(let index in checklist.items){
-            if(filter.isProfane(checklist.items[index].title) || filter.isProfane(checklist.items[index].subText)){
+        if (filter.isProfane(checklist.title)) temp.push('title')
+        if (filter.isProfane(checklist.description)) temp.push('description')
+        for (let index in checklist.items) {
+            if (filter.isProfane(checklist.items[index].title) || filter.isProfane(checklist.items[index].subText)) {
                 temp.push(`items`)
-            } 
+            }
         }
 
         setProfanity(temp)
@@ -110,7 +117,7 @@ export default function CreateChecklist() {
 
     const addChecklistItem = (newItem: ChecklistItem) => {
         const temp = []
-        for(let item of checklist.items) temp.push(item)
+        for (let item of checklist.items) temp.push(item)
 
         temp.push(newItem)
         setItems(temp)
@@ -141,7 +148,7 @@ export default function CreateChecklist() {
                 break;
             case 'editing':
                 setState('adding_doc')
-                if(window.location.href.split("?").length == 1) return // TODO - this should be better
+                if (window.location.href.split("?").length == 1) return // TODO - this should be better
 
                 const checklistDocId = window.location.href.split("=")[1]
                 const checklistDocRef = doc(db, 'checklists', checklistDocId)
@@ -151,7 +158,7 @@ export default function CreateChecklist() {
     }
 
     const onDeleteItem = (index) => {
-        console.log("ran: "+index)
+        console.log("ran: " + index)
         const temp = [...checklist.items]
         temp.splice(index, 1)
         setItems(temp)
@@ -167,7 +174,7 @@ export default function CreateChecklist() {
     )
 
     const createTag = (newTag) => {
-        if(filter.isProfane(newTag)) return
+        if (filter.isProfane(newTag)) return
 
         const tagDocRef = doc(db, 'misc', 'tags')
         updateDoc(tagDocRef, {
@@ -177,15 +184,15 @@ export default function CreateChecklist() {
 
     const handleTagChange = (newValue: any[]) => {
         let temp = newValue.map(({ value }) => value)
-        if(temp == null) temp = []
+        if (temp == null) temp = []
         setTags(temp)
     }
 
     const isValidNewTag = (inputValue) => {
         return (
-            !inputValue.includes('+') && 
-            !inputValue.includes('?') && 
-            !inputValue.includes('=') && 
+            !inputValue.includes('+') &&
+            !inputValue.includes('?') &&
+            !inputValue.includes('=') &&
             !inputValue.includes('-') &&
             inputValue.length > 0 &&
             !filter.isProfane(inputValue)
@@ -216,7 +223,7 @@ export default function CreateChecklist() {
                 <HR />
                 {checklist.items.length == 0 && <Text className="mb-2" small>No items have been added, click the button below to add the first.</Text>}
                 <Checklist onDelete={onDeleteItem} items={checklist.items} disabled large />
-                { profranity.includes("items") && <DangerText>Please remove the profanity from the item(s).</DangerText> }
+                {profranity.includes("items") && <DangerText>Please remove the profanity from the item(s).</DangerText>}
                 <AddButton onClick={() => setItemFormModal(true)} />
                 <Button disabled={profranity.length > 0} stretch title="Save Checklist" className="mt-4 md:hidden" onClick={saveChecklist} />
             </div>

@@ -105,7 +105,7 @@ export default function Layout({ children }) {
     return (
         <FirebaseContext.Provider value={{ auth, db, userDoc }}>
             <DarkModeContext.Provider value={{ darkMode }}>
-                <div className={`h-max min-h-screen relative ${darkMode && 'dark bg-gray-800'}`}>
+                <div className={`h-max  min-h-screen relative ${darkMode && 'dark bg-gray-800'}`}>
                     <div className="hidden md:flex">
                         <LeftSidebar className="sticky top-0" userLoggedIn={user} router={router} links={sidebarLinks} />
                         <div className="relative flex flex-col w-full">
@@ -115,10 +115,10 @@ export default function Layout({ children }) {
                             </div>
                         </div>
                     </div>
-                    <div className="h-full md:hidden">
+                    <div className="flex flex-col h-screen md:hidden">
                         <MobileTopBar setDarkMode={setDarkMode} darkMode={darkMode} setNavOut={setNavOut} navOut={navOut} />
                         {MobileDropDownNav(navOut, router, !!user, sidebarLinks)}
-                        <div className="h-full p-4">
+                        <div className="flex-auto p-4">
                             { children }
                         </div>
                     </div>
