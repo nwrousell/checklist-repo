@@ -30,15 +30,20 @@ export default function UseChecklist({ }) {
                 return
             }
 
+            console.log(snapshot.data().private, userDoc.createdChecklists.includes(checklistDocId))
+
             // ! - this is forbidding me when it shouldn't sometimes
             const notAllowed = (snapshot.data().private && !userDoc.createdChecklists.includes(checklistDocId))
             if (notAllowed) {
                 setError('This checklist is private. Log in with the correct account if you created it.')
-            } else setChecklist(snapshot.data() as Checklist)
+            } else {
+                setChecklist(snapshot.data() as Checklist)
+                setError('')
+            }
         }
 
         getChecklist()
-    }, [userDoc])
+    }, [userDoc, userDoc.exists])
 
     if (error) return <div className="flex items-center justify-center h-full text-center"><Heading>{error}</Heading></div>
     if (checklist === undefined) return <div className="flex items-center justify-center h-full"><Spinner /></div>

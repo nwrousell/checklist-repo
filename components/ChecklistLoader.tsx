@@ -89,7 +89,7 @@ export default function ChecklistLoader({ db, userDoc, state="browse", onDelete=
         else setMoreChecklists(true)
     }
 
-    useEffect(() => { getNextBatch(true) }, [state])
+    useEffect(() => { getNextBatch(true) }, [state, userDoc])
 
     return (
         <div id="container-ref" className="relative min-h-full p-4 pb-32 overflow-scroll scrollbar-hide md:pb-32 md:p-8 bg-gray-50 dark:bg-gray-700">

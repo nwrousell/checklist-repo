@@ -115,10 +115,10 @@ export default function Layout({ children }) {
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-col h-screen md:hidden">
+                    <div className="flex flex-col h-full md:hidden">
                         <MobileTopBar setDarkMode={setDarkMode} darkMode={darkMode} setNavOut={setNavOut} navOut={navOut} />
                         {MobileDropDownNav(navOut, router, !!user, sidebarLinks)}
-                        <div className="flex-auto p-4">
+                        <div className="flex-auto h-full p-4">
                             { children }
                         </div>
                     </div>

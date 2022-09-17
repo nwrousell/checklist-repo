@@ -15,9 +15,16 @@ import ChecklistLoader from "../components/ChecklistLoader"
 
 export default function MyChecklists() {
     const { db, userDoc } = useContext(FirebaseContext)
-    // const [loading, setLoading] = useState(true)
+    const [loaded, setLoaded] = useState(false)
     const [checklistToDelete, setChecklistToDelete] = useState({ title: '', docId: '' })
 
+    useEffect(() => {
+        if(userDoc.exists) {
+            setLoaded(false)
+            console.log("THIS RAN")
+        }
+        console.log("OUTER")
+    }, [userDoc])
 
     const handleDelete = async () => {
         // setLoading(true)
@@ -33,6 +40,8 @@ export default function MyChecklists() {
         // setLoading(false)
         setChecklistToDelete({title: '', docId: ''})
     }
+
+    console.log("created checklists: ", userDoc.createdChecklists)
 
     return (
         <>
