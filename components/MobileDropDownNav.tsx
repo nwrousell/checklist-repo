@@ -8,7 +8,9 @@ import Button from "../ui/Button";
 export function MobileDropDownNav(navOut: boolean, router: NextRouter, userLoggedIn: boolean, sidebarLinks) {
     return <div className={` ${!navOut ? 'hidden' : 'p-4 border-b-2 rounded border-gray-200'}`}>
         <Search />
-        {sidebarLinks.map((props, i) => <LeftSidebarLink {...props} active={router.pathname === props.href} key={i} />)}
+        <div className="pt-4">
+            {sidebarLinks.map((props, i) => <LeftSidebarLink {...props} active={router.pathname === props.href} key={i} />)}
+        </div>
         <HR />
         {
             userLoggedIn ? <LogoutButton /> :

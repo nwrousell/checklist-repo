@@ -1,7 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import { AiOutlineStar, AiOutlineUser } from 'react-icons/ai'
+import { AiOutlineHeart, AiOutlineUser } from 'react-icons/ai'
+import { BsGrid3X3Gap } from 'react-icons/bs'
 import { MdAdd } from 'react-icons/md'
 import { RiFileList3Line } from 'react-icons/ri'
 import { TbChecklist } from 'react-icons/tb'
@@ -24,7 +25,7 @@ const LEFT_SIDEBAR_LINKS = [
     {
         title: 'Browse',
         href: "/",
-        Icon: RiFileList3Line,
+        Icon: BsGrid3X3Gap,
         accountOnly: false,
     },
     {
@@ -36,7 +37,7 @@ const LEFT_SIDEBAR_LINKS = [
     {
         title: 'Favorites',
         href: "/favorites",
-        Icon: AiOutlineStar,
+        Icon: AiOutlineHeart,
         accountOnly: true,
     },
     {
@@ -50,7 +51,13 @@ const LEFT_SIDEBAR_LINKS = [
         href: "/profile",
         Icon: AiOutlineUser,
         accountOnly: false,
-    }
+    },
+    {
+        title: 'About',
+        href: "/about",
+        Icon: RiFileList3Line,
+        accountOnly: false,
+    },
 ]
 
 const PATHNAMES_EXCLUDED_FROM_LAYOUT = ['/login']

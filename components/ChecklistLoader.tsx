@@ -55,24 +55,25 @@ export default function ChecklistLoader({ db, userDoc, state="browse", onDelete=
 
         const checklistsCollectionRef = collection(db, 'checklists')
 
+        // if(userDoc.exists && state=="browse") return
+
         let q
         switch(state){
             case 'filter':
-                console.log(`RAN: ${filterTag}`)
-                q = query(checklistsCollectionRef, where('private', '==', false), where('tags', 'array-contains', filterTag), orderBy("createdAt"), startAfter(lastVisible || 0), limit(CHECKLISTS_TO_LOAD))
+                q = query(checklistsCollectionRef, where('private', '==', false), where('tags', 'array-contains', filterTag), orderBy("createdAt"), startAfter(first ? 0 : lastVisible), limit(CHECKLISTS_TO_LOAD))
                 break;
             case 'browse':
-                q = query(checklistsCollectionRef, where('private', '==', false), orderBy("createdAt"), startAfter(lastVisible || 0), limit(CHECKLISTS_TO_LOAD))
+                q = query(checklistsCollectionRef, where('private', '==', false), orderBy("createdAt"), startAfter(first ? 0 : lastVisible), limit(CHECKLISTS_TO_LOAD))
                 break;
             case 'user-created':
                 if (userDoc.createdChecklists.length === 0) return
                 if(first) q = query(checklistsCollectionRef, orderBy(documentId()), where(documentId(), 'in', userDoc.createdChecklists), limit(CHECKLISTS_TO_LOAD))
-                else q = query(checklistsCollectionRef, orderBy(documentId()), where(documentId(), 'in', userDoc.createdChecklists), startAfter(lastVisible || 0), limit(CHECKLISTS_TO_LOAD))
+                else q = query(checklistsCollectionRef, orderBy(documentId()), where(documentId(), 'in', userDoc.createdChecklists), startAfter(first ? 0 : lastVisible), limit(CHECKLISTS_TO_LOAD))
                 break;
             case 'favorites':
                 if (userDoc.favoritedChecklists.length === 0) return
                 if(first) q = query(checklistsCollectionRef, orderBy(documentId()), where(documentId(), 'in', userDoc.createdChecklists), limit(CHECKLISTS_TO_LOAD))
-                else q = query(checklistsCollectionRef, orderBy(documentId()), where(documentId(), 'in', userDoc.createdChecklists), startAfter(lastVisible || 0), limit(CHECKLISTS_TO_LOAD))
+                else q = query(checklistsCollectionRef, orderBy(documentId()), where(documentId(), 'in', userDoc.createdChecklists), startAfter(first ? 0 : lastVisible), limit(CHECKLISTS_TO_LOAD))
                 break;
             }
 
@@ -94,7 +95,7 @@ export default function ChecklistLoader({ db, userDoc, state="browse", onDelete=
     return (
         <div id="container-ref" className="relative min-h-full p-4 pb-32 overflow-scroll scrollbar-hide md:pb-32 md:p-8 bg-gray-50 dark:bg-gray-700">
             <InfiniteScroll
-                dataLength={checklists.length} //This is important field to render the next data
+                dataLength={checklists.length}
                 next={getNextBatch}
                 hasMore={moreChecklists}
                 loader={<div className="absolute transform -translate-x-1/2 bottom-8 left-1/2"><Spinner /></div>}
