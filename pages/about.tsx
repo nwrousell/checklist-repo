@@ -17,7 +17,7 @@ export default function About(){
                 </div>
                 <div className="mb-8">
                     <Heading>Development</Heading>
-                    <p className="text-lg leading-8">Checklist Repo was made by <a href="https://www.noahrousell.com" target="_blank" className="border-b-2 border-primary-700 border-opacity-20 text-primary-700 hover:border-none">Noah Rousell</a>. If you've found any bugs, have feedback, or are itching with a question, you can contact him <a className="border-b-2 border-primary-700 border-opacity-20 text-primary-700 hover:border-none" href="https://www.noahrousell.com/contact" target="_blank">here</a>.</p>
+                    <p className="text-lg leading-8">Checklist Repo was made by <a rel="noreferrer" href="https://www.noahrousell.com" target="_blank" className="border-b-2 border-primary-700 border-opacity-20 text-primary-700 hover:border-none">Noah Rousell</a>. If you've found any bugs, have feedback, or are itching with a question, you can contact him <a className="border-b-2 border-primary-700 border-opacity-20 text-primary-700 hover:border-none" rel="noreferrer" href="https://www.noahrousell.com/contact" target="_blank">here</a>.</p>
                 </div>
             {/* </div> */}
         </div>
