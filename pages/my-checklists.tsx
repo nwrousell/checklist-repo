@@ -21,9 +21,7 @@ export default function MyChecklists() {
     useEffect(() => {
         if(userDoc.exists) {
             setLoaded(false)
-            console.log("THIS RAN")
         }
-        console.log("OUTER")
     }, [userDoc])
 
     const handleDelete = async () => {
@@ -41,7 +39,7 @@ export default function MyChecklists() {
         setChecklistToDelete({title: '', docId: ''})
     }
 
-    console.log("created checklists: ", userDoc.createdChecklists)
+    // console.log("created checklists: ", userDoc.createdChecklists)
 
     return (
         <>

@@ -9,14 +9,14 @@ import { useRouter } from "next/router"
 import { User } from "../hooks/useUserDoc"
 import Text from "../ui/Text"
 
-const CHECKLISTS_TO_LOAD = 6
+const CHECKLISTS_TO_LOAD = 9
 
 type LoadingState = 'browse' | 'user-created' | 'favorites' | 'filter'
 
 export default function ChecklistLoader({ db, userDoc, state="browse", onDelete=null, filterTag='' }) {
     const [checklists, setChecklists] = useState([])
     const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot>()
-    const [moreChecklists, setMoreChecklists] = useState(false)
+    const [moreChecklists, setMoreChecklists] = useState(true)
     const router = useRouter()
 
     const onFavorite = (newValue: boolean, docId: string) => {
@@ -49,6 +49,7 @@ export default function ChecklistLoader({ db, userDoc, state="browse", onDelete=
     }
 
     async function getNextBatch(first = false) {
+        !first && console.log("get next")
         if(first) setLastVisible(null)
         if (!moreChecklists && !first) return
         if (!lastVisible && !first) return
@@ -99,7 +100,7 @@ export default function ChecklistLoader({ db, userDoc, state="browse", onDelete=
                 next={getNextBatch}
                 hasMore={moreChecklists}
                 loader={<div className="absolute transform -translate-x-1/2 bottom-8 left-1/2"><Spinner /></div>}
-                scrollableTarget={"container-ref"}
+                // scrollableTarget={"container-ref"}
                 endMessage={
                     <Text small className="absolute text-center transform -translate-x-1/2 select-none bottom-8 left-1/2">Those are all of the checklists we have for that query.</Text>
                 }
